@@ -5,6 +5,7 @@
     import { get } from "svelte/store";
     import { onMount } from "svelte";
     const pb = new PocketBase('http://127.0.0.1:8090');
+    import LogoutModal from '$lib/components/logout.svelte';
 
     let animation = false;
     let showPopup = false;
@@ -19,6 +20,21 @@
     function logout() {
         pb.authStore.clear();
         window.location.href = '/';
+    }
+
+    let showLogoutModal = false;
+
+    function toggleLogoutModalClick() {
+    showLogoutModal = true;
+    }
+
+    function handleConfirm() {
+        // Handle logout logic
+        showLogoutModal = false;
+    }
+
+    function handleCancel() {
+        showLogoutModal = false;
     }
 </script>
 
@@ -163,8 +179,8 @@
                 <span class="nav-text">Settings</span>
             </div>
             <div class="nav-item">
-                <span class="material-symbols-outlined nav-icon nav-icon-logout">logout</span>
-                <span class="nav-text nav-text-logout">Logout</span>
+                <span class="material-symbols-outlined nav-icon nav-icon-logout"on:click={toggleLogoutModalClick}>logout</span>
+                <span class="nav-text nav-text-logout" on:click={toggleLogoutModalClick}>Logout</span>
             </div>
         </div>
         <div id="nav-bar-bottom">
@@ -188,4 +204,12 @@
     </div>
 {:else}
     <slot />
+{/if}
+
+{#if showLogoutModal}
+  <LogoutModal 
+    show={showLogoutModal} 
+    onConfirm={handleConfirm} 
+    onCancel={handleCancel} 
+  />
 {/if}

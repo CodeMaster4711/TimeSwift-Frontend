@@ -1,60 +1,39 @@
-<div class="main">
-    <div class="loader"></div>
+
+<div class="loader">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 66 66" height="100px" width="100px" class="spinner">
+    <circle stroke="url(#gradient)" r="20" cy="33" cx="33" stroke-width="1" fill="transparent" class="path"></circle>
+      <linearGradient id="gradient">
+        <stop stop-opacity="1" stop-color="#fe0000" offset="0%"></stop>
+        <stop stop-opacity="0" stop-color="#af3dff" offset="100%"></stop>
+      </linearGradient>
+    
+  </svg> 
 </div>
-
 <style>
-        /* From Uiverse.io by mrhyddenn */ 
     .loader {
-    position: relative;
-    transform: scale(2);
-    border-radius: 50%;
-    border: 1px solid;
-    width: 30px;
-    height: 30px;
-    color: white;
-    }
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
-    .loader::after {
-    position: absolute;
-    width: 0px;
-    height: 10px;
-    display: block;
-    border-left: 1px solid #fff;
-    content: '';
-    left: 14px;
-    border-radius: 1px;
-    top: 4px;
-    animation-duration: 1s;
-    }
+.spinner {
+  width: 250px;
+  height: 150px;
+  position: relative;
+  animation: rotation 0.75s linear infinite;
+  border-radius: 100em;
+}
 
-    .loader::before {
-    position: absolute;
-    width: 0px;
-    height: 10px;
-    display: block;
-    border-left: 1px solid #fff;
-    content: '';
-    left: 14px;
-    border-radius: 1px;
-    top: 4px;
-    animation-duration: 40s;
-    }
+.path {
+  stroke-dasharray: 100;
+  stroke-dashoffset: 20;
+  stroke-linecap: round;
+}
 
-    .loader::before,.loader::after {
-    transform-origin: bottom;
-    animation-name: dial;
-    animation-iteration-count: infinite;
-    animation-timing-function: linear;
-    }
-
-    @keyframes dial {
-    0% {
-        transform: rotate(0deg);
-    }
-
-    100% {
-        transform: rotate(360deg);
-    }
-    }
+@keyframes rotation {
+  to {
+    transform: rotate(360deg);
+  }
+}
 
 </style>
