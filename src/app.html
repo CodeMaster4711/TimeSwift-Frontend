@@ -1,0 +1,32 @@
+<!DOCTYPE>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <link rel="icon" href="/favicon.ico" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --primary-color: rgb(149, 1, 1);
+      --light-primary-color: #FF0000;
+      --light-color: #ffffff;
+      --dark-primary-color: #3D0000;
+      --gradient-red: linear-gradient(to bottom, var(--dark-color), var(--dark-primary-color), var(--primary-color), var(--light-primary-color));
+      --light-gray: #565555;
+      --dark-color: #000000;
+      --field-color: #6b1616;
+    }
+
+
+  </style>
+  <script>
+    const ipc = require("electron").ipcRenderer;
+
+  </script>
+  %sveltekit.head%
+</head>
+<body >
+<div id="svelte">
+  %sveltekit.body%
+</div>
+</body>
+</html>
