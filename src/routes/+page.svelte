@@ -20,21 +20,44 @@
   let loading = false;
 
   const login = async () => {
-    const user = await pb.collection("users").authWithPassword(username, password).catch(e => {
-      password = "";
-      error = "Error while logging in!"
-    });
-    if(user) {
-      username = "";
-      password = "";
-      goto('/Home');
-    }
-    loading = false;
-  }
+        loading = true;
+        error = "";
 
-  const switchTab = (tab) => {
-    activeTab = tab;
-  }
+        try {
+            const response = await fetch('http://localhost:3030/signin', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    email: username,
+                    password: password
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error('Error while logging in!');
+            }
+
+            const data = await response.json();
+            if (data.success) {
+                username = "";
+                password = "";
+                goto('/Home');
+            } else {
+                throw new Error('Invalid login credentials!');
+            }
+        } catch (e) {
+            console.error('Fetch error:', e); // Ausgabe des Fehlers in der Konsole
+            error = e.message;
+        } finally {
+            loading = false;
+        }
+    }
+
+    const switchTab = (tab) => {
+        activeTab = tab;
+    }
 </script>
 
 <div class="main">
