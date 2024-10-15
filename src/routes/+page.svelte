@@ -20,21 +20,91 @@
   let loading = false;
 
   const login = async () => {
-    const user = await pb.collection("users").authWithPassword(username, password).catch(e => {
-      password = "";
-      error = "Error while logging in!"
-    });
-    if(user) {
-      username = "";
-      password = "";
-      goto('/Home');
-    }
-    loading = false;
-  }
+        loading = true;
+        error = "";
 
-  const switchTab = (tab) => {
-    activeTab = tab;
-  }
+        try {
+            const response = await fetch('http://localhost:3030/signin', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    email: username,
+                    password: password
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error('Error while logging in!');
+            }
+
+            const data = await response.json();
+            if (data.success) {
+                username = "";
+                password = "";
+                goto('/Home');
+            } else {
+                throw new Error('Invalid login credentials!');
+            }
+        } catch (e) {
+            console.error('Fetch error:', e); // Ausgabe des Fehlers in der Konsole
+            error = e.message;
+        } finally {
+            loading = false;
+        }
+    }
+
+    const switchTab = (tab) => {
+        activeTab = tab;
+    }
+
+    const signup = async () => {
+        loading = true;
+        error = "";
+
+        if (create_password !== confirm_password) {
+            error = "Passwords do not match!";
+            loading = false;
+            return;
+        }
+
+        try {
+            const response = await fetch('http://localhost:3030/signup', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    name: name,
+                    firstname: firstname,
+                    email: email,
+                    password: create_password,
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error('Error while signing up!');
+            }
+
+            const data = await response.json();
+            if (data.success) {
+                name = "";
+                firstname = "";
+                email = "";
+                create_password = "";
+                confirm_password = "";
+                activeTab = 'login';
+            } else {
+                throw new Error('Invalid signup credentials!');
+            }
+        } catch (e) {
+            console.error('Fetch error:', e); // Ausgabe des Fehlers in der Konsole
+            error = e.message;
+        } finally {
+            loading = false;
+        }
+    }
 </script>
 
 <div class="main">
@@ -95,7 +165,7 @@
           </div>
         </div>
       {/if}
-      <button class="action-button" on:click={activeTab === 'login' ? login : createAccount}>
+      <button class="action-button" on:click={activeTab === 'login' ? login : signup}>
         {activeTab === 'login' ? 'Login' : 'Create Account'}
       </button>
       <div>{error}</div>
