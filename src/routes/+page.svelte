@@ -19,6 +19,7 @@
   let confirm_password = ""; // Deklaration der confirm_password-Variable
   let loading = false;
 
+
   const login = async () => {
         loading = true;
         error = "";
@@ -168,7 +169,14 @@
       <button class="action-button" on:click={activeTab === 'login' ? login : signup}>
         {activeTab === 'login' ? 'Login' : 'Create Account'}
       </button>
-      <div>{error}</div>
+      <div>
+        {#if loading}
+          <div class="success"></div>
+        {/if}
+        {#if error}
+          <div class="error">{error}</div>
+        {/if}
+      </div>
     </div>
   </div>
 </div>
@@ -359,5 +367,34 @@
     z-index: 1001;
   }
   
+  /* From Uiverse.io by mrhyddenn */ 
+  .success {
+    width: 50px;
+    height: 50px;
+    display: inline-block;
+    border: 5px solid rgb(255, 17, 0);
+    border-radius: 50%;
+    border-top-color: transparent;
+    border-bottom-color: transparent;
+    animation: rot5 1s infinite;
+  }
+
+  @keyframes rot5 {
+    0% {
+      transform: rotate(0);
+    }
+
+    50% {
+      transform: rotate(180deg);
+      border-top-color: rgb(139, 46, 46);
+      border-bottom-color: rgb(243, 92, 33);
+      border-right-color: transparent;
+      border-left-color: transparent;
+    }
+
+    100% {
+      transform: rotate(360deg);
+    }
+  }
   
 </style>
