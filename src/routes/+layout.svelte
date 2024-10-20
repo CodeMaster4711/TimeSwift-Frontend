@@ -6,10 +6,14 @@
     import { onMount } from "svelte";
     const pb = new PocketBase('http://127.0.0.1:8090');
     import LogoutModal from '$lib/components/logout.svelte';
+    import Settings from '$lib/components/settings-lokal.svelte';
 
     let animation = false;
     let showPopup = false;
     let showConfirmPopup = false;
+    let showsettings = false;
+
+
     function togglePopup() {
         showPopup = !showPopup;
     }
@@ -36,6 +40,10 @@
     function handleCancel() {
         showLogoutModal = false;
     }
+
+    const settingstoggle = () => {
+        showsettings = !showsettings;
+    };
 </script>
 
 {#if $page.url.pathname !== '/routes' && $page.url.pathname !== '/login' && $page.url.pathname !== '/loader'}
@@ -175,8 +183,8 @@
             </div>
             <div id="bar"></div> <!-- Trennlinie -->
             <div class="nav-item">
-                <span class="material-symbols-outlined nav-icon">settings</span>
-                <span class="nav-text">Settings</span>
+                <span class="material-symbols-outlined nav-icon" on:click={settingstoggle}>settings</span>
+                <span class="nav-text"on:click={settingstoggle}>Settings</span>
             </div>
             <div class="nav-item">
                 <span class="material-symbols-outlined nav-icon nav-icon-logout"on:click={toggleLogoutModalClick}>logout</span>
@@ -212,4 +220,8 @@
     onConfirm={handleConfirm} 
     onCancel={handleCancel} 
   />
+{/if}
+
+{#if showsettings}
+    <Settings {showsettings} {settingstoggle} />
 {/if}

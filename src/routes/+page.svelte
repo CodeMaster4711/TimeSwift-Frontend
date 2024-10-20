@@ -367,34 +367,27 @@
     z-index: 1001;
   }
   
-  /* From Uiverse.io by mrhyddenn */ 
-  .success {
-    width: 50px;
-    height: 50px;
-    display: inline-block;
-    border: 5px solid rgb(255, 17, 0);
-    border-radius: 50%;
-    border-top-color: transparent;
-    border-bottom-color: transparent;
-    animation: rot5 1s infinite;
-  }
+.success {
+ width: 60px;
+ height: 60px;
+}
 
-  @keyframes rot5 {
-    0% {
-      transform: rotate(0);
-    }
+.success::before {
+ content: "";
+ box-sizing: border-box;
+ position: absolute;
+ width: 60px;
+ height: 60px;
+ border-radius: 50%;
+ border-top: 2px solid #ff0000;
+ border-right: 2px solid transparent;
+ animation: spinner8217 0.8s linear infinite;
+}
 
-    50% {
-      transform: rotate(180deg);
-      border-top-color: rgb(139, 46, 46);
-      border-bottom-color: rgb(243, 92, 33);
-      border-right-color: transparent;
-      border-left-color: transparent;
-    }
+@keyframes spinner8217 {
+ to {
+  transform: rotate(360deg);
+ }
+}
 
-    100% {
-      transform: rotate(360deg);
-    }
-  }
-  
 </style>
