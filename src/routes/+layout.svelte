@@ -1,14 +1,12 @@
 <script>
     import { page } from '$app/stores'
-    import PocketBase from 'pocketbase';
-    import { currentUser } from "$lib/auth";
     import { get } from "svelte/store";
     import { onMount } from "svelte";
-    const pb = new PocketBase('http://127.0.0.1:8090');
     import LogoutModal from '$lib/components/logout.svelte';
     import Settings from '$lib/components/settings-lokal.svelte';
     import { get_root_for_style } from 'svelte/internal';
     import {goto} from "$app/navigation";
+    import {clearAuthData} from '$lib/auth';
 
     let animation = false;
     let showPopup = false;
@@ -20,19 +18,18 @@
     function togglePopup() {
         showPopup = !showPopup;
     }
-    console.log($currentUser);
     function confirmLogout() {
         showConfirmPopup = true;
     }
-    function logout() {
-        pb.authStore.clear();
+    const logout = () => {
+        clearAuthData();
         window.location.href = '/';
     }
 
     let showLogoutModal = false;
 
     function toggleLogoutModalClick() {
-    showLogoutModal = true;
+        showLogoutModal = true;
     }
 
     function handleConfirm() {
@@ -209,11 +206,7 @@
             </div>
             <div id="avatar-container">
                 <div id="avatar" on:click={togglePopup}>
-                    {#if $currentUser && $currentUser.avatar}
-                        <img src={pb.files.getUrl($currentUser, $currentUser.avatar)} alt="Avatar">
-                    {:else}
                         <img src="/None-Avatar.png" alt="Default Avatar">
-                    {/if}
                 </div>
             </div>    
         </div>
