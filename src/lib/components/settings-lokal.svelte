@@ -26,6 +26,8 @@
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     width: 600px;
     display: flex;
+    flex-direction: column;
+    height: 80vh; /* Höhe des Popups */
   }
 
   .menu {
@@ -53,8 +55,9 @@
   }
 
   .content {
-    width: 70%;
+    flex-grow: 1; /* Nimmt den verfügbaren Platz ein */
     padding-left: 20px;
+    overflow-y: auto; /* Ermöglicht Scrollen, wenn der Inhalt zu groß ist */
   }
 
   .content h2 {
@@ -77,31 +80,35 @@
     border: 1px solid #ccc;
   }
 
-  .buttons {
+  .footer {
     display: flex;
     justify-content: flex-end;
     gap: 10px;
+    padding-top: 10px;
   }
 </style>
 
 {#if showsettings}
   <div class="popup-overlay" on:click={settingstoggle}>
     <div class="popup-content" on:click|stopPropagation>
-      <div class="menu">
-        <h2>Menu</h2>
-        <ul>
-          <li><a href="#account">Account</a></li>
-          <li><a href="#appearance">Appearance</a></li>
-          <li><a href="#LandB">Billing and Licence</a></li>
-          <li><a href="#Password">Password</a></li>
-          <li><a href="#Sessions">Sessions</a></li>
-          <li><a href="#Organization">Organization</a></li>
-
-        </ul>
+      <div style="display: flex; flex-grow: 1;">
+        <div class="menu">
+          <h2>Menu</h2>
+          <ul>
+            <li><a href="#account">Account</a></li>
+            <li><a href="#appearance">Appearance</a></li>
+            <li><a href="#LandB">Billing and Licence</a></li>
+            <li><a href="#Password">Password</a></li>
+            <li><a href="#Sessions">Sessions</a></li>
+            <li><a href="#Organization">Organization</a></li>
+          </ul>
+        </div>
+        <div class="content">
+          <h2>Settings</h2>
+          <!-- Weitere Einstellungen hier hinzufügen -->
+        </div>
       </div>
-      <div class="content">
-        <h2>Settings</h2>
-
+      <div class="footer">
         <div class="buttons">
           <button on:click={settingstoggle}>Close</button>
           <button on:click={settingstoggle}>Save</button>
