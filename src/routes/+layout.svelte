@@ -1,31 +1,35 @@
 <script>
     import { page } from '$app/stores'
-    import PocketBase from 'pocketbase';
-    import { currentUser } from "$lib/auth";
     import { get } from "svelte/store";
     import { onMount } from "svelte";
-    const pb = new PocketBase('http://127.0.0.1:8090');
     import LogoutModal from '$lib/components/logout.svelte';
+    import Settings from '$lib/components/settings-lokal.svelte';
+    import { get_root_for_style } from 'svelte/internal';
+    import {goto} from "$app/navigation";
+    import {clearAuthData} from '$lib/auth';
 
     let animation = false;
     let showPopup = false;
     let showConfirmPopup = false;
+    let showsettings = false;
+    let side = '';
+
+
     function togglePopup() {
         showPopup = !showPopup;
     }
-    console.log($currentUser);
     function confirmLogout() {
         showConfirmPopup = true;
     }
-    function logout() {
-        pb.authStore.clear();
+    const logout = () => {
+        clearAuthData();
         window.location.href = '/';
     }
 
     let showLogoutModal = false;
 
     function toggleLogoutModalClick() {
-    showLogoutModal = true;
+        showLogoutModal = true;
     }
 
     function handleConfirm() {
@@ -36,6 +40,17 @@
     function handleCancel() {
         showLogoutModal = false;
     }
+
+    const settingstoggle = () => {
+        showsettings = !showsettings;
+    };
+
+    function calendargoto() {goto('/Calendar')};
+    function timetablegoto() {goto('/Timetable')};
+    function databasegoto() {goto('/Database')};
+    function timergoto() {goto('/Timer')};
+    function homegoto() {goto('/Home')};
+
 </script>
 
 {#if $page.url.pathname !== '/routes' && $page.url.pathname !== '/login' && $page.url.pathname !== '/loader'}
@@ -154,29 +169,30 @@
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
         <div id="nav-bar-top">
             <div class="nav-item">
-                <span class="material-symbols-outlined nav-icon">home</span>
-                <span class="nav-text animate">Home</span>
+                    <span class="material-symbols-outlined nav-icon"on:click={homegoto}>home</span>
+                    <span class="nav-text"on:click={homegoto}>Home</span>
             </div>
             <div class="nav-item">
-                <span class="material-symbols-outlined nav-icon">calendar_today</span>
-                <span class="nav-text animte">Calender</span>
+                
+                <span class="material-symbols-outlined nav-icon"on:click={calendargoto}>calendar_today</span>
+                <span class="nav-text animte"on:click={calendargoto}>Calender</span>
             </div>
             <div class="nav-item">
-                <span class="material-symbols-outlined nav-icon">schedule</span>
-                <span class="nav-text">Timetable</span>
+                <span class="material-symbols-outlined nav-icon"on:click={timetablegoto}>schedule</span>
+                <span class="nav-text"on:click={timetablegoto}>Timetable</span>
             </div>
             <div class="nav-item">
-                <span class="material-symbols-outlined nav-icon">database</span>
-                <span class="nav-text">Database</span>
+                <span class="material-symbols-outlined nav-icon"on:click={databasegoto}>database</span>
+                <span class="nav-text"on:click={databasegoto}>Database</span>
             </div>
             <div class="nav-item">
-                <span class="material-symbols-outlined nav-icon">timer</span>
-                <span class="nav-text">Timer</span>
+                <span class="material-symbols-outlined nav-icon"on:click={timergoto}>timer</span>
+                <span class="nav-text"on:click={timergoto}>Timer</span>
             </div>
             <div id="bar"></div> <!-- Trennlinie -->
             <div class="nav-item">
-                <span class="material-symbols-outlined nav-icon">settings</span>
-                <span class="nav-text">Settings</span>
+                <span class="material-symbols-outlined nav-icon" on:click={settingstoggle}>settings</span>
+                <span class="nav-text"on:click={settingstoggle}>Settings</span>
             </div>
             <div class="nav-item">
                 <span class="material-symbols-outlined nav-icon nav-icon-logout"on:click={toggleLogoutModalClick}>logout</span>
@@ -190,11 +206,7 @@
             </div>
             <div id="avatar-container">
                 <div id="avatar" on:click={togglePopup}>
-                    {#if $currentUser && $currentUser.avatar}
-                        <img src={pb.files.getUrl($currentUser, $currentUser.avatar)} alt="Avatar">
-                    {:else}
                         <img src="/None-Avatar.png" alt="Default Avatar">
-                    {/if}
                 </div>
             </div>    
         </div>
@@ -212,4 +224,8 @@
     onConfirm={handleConfirm} 
     onCancel={handleCancel} 
   />
+{/if}
+
+{#if showsettings}
+    <Settings {showsettings} {settingstoggle} />
 {/if}

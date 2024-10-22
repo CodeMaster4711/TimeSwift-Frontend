@@ -21,7 +21,8 @@
     "electron-window-state": "^5.0.3",
     "html2pdf.js": "^0.10.1",
     "pocketbase": "^0.21.1",
-    "svelte-calendar": "^3.1.6"
+    "svelte-calendar": "^3.1.6",
+    "svelte-routing": "^2.13.0"
   },
   "main": "src/electron.cjs",
   "scripts": {

@@ -1,12 +1,12 @@
 <script>
     import { src_url_equal } from "svelte/internal";
-    import {pb} from "$lib/auth";
     import {goto} from "$app/navigation";
     import { username_store } from '$lib/store';
-    import { token } from '$lib/auth';
     import { get } from 'svelte/store';
     import Loader from '$lib/components/loader.svelte';
     import {onMount} from "svelte";
+    import { authToken, userData, saveAuthData, clearAuthData } from '$lib/auth';
+
 
   let error = "";
   let activeTab = 'login'; // Zustand für die aktive Registerkarte
@@ -18,6 +18,43 @@
   let create_password = ""; // Deklaration der create_password-Variable
   let confirm_password = ""; // Deklaration der confirm_password-Variable
   let loading = false;
+
+  
+  onMount(() => {
+        const token = localStorage.getItem('authToken');
+        console.log('Token:', token);
+        validateToken(token);
+    });
+
+    const validateToken = async (token) => {
+        try {
+            console.log('Validating token:', token);
+            const response = await fetch('http://localhost:3030/validate', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error('Invalid token');
+            }
+
+            const data = await response.json();
+            if (data.valid) {
+                saveAuthData(token, data.userData);
+                goto('/Home');
+            } else {
+                clearAuthData();
+            }
+        } catch (e) {
+            console.error('Token validation error:', e);
+            clearAuthData();
+        }
+    };
+
+
 
   const login = async () => {
         loading = true;
@@ -40,10 +77,13 @@
             }
 
             const data = await response.json();
+            console.log('Server response:', data); // Ausgabe der Serverantwort
+
             if (data.success) {
                 username = "";
                 password = "";
                 goto('/Home');
+                data.token = authToken;
             } else {
                 throw new Error('Invalid login credentials!');
             }
@@ -168,7 +208,14 @@
       <button class="action-button" on:click={activeTab === 'login' ? login : signup}>
         {activeTab === 'login' ? 'Login' : 'Create Account'}
       </button>
-      <div>{error}</div>
+      <div>
+        {#if loading}
+          <div class="success"></div>
+        {/if}
+        {#if error}
+          <div class="error">{error}</div>
+        {/if}
+      </div>
     </div>
   </div>
 </div>
@@ -359,5 +406,27 @@
     z-index: 1001;
   }
   
-  
+.success {
+ width: 60px;
+ height: 60px;
+}
+
+.success::before {
+ content: "";
+ box-sizing: border-box;
+ position: absolute;
+ width: 60px;
+ height: 60px;
+ border-radius: 50%;
+ border-top: 2px solid #ff0000;
+ border-right: 2px solid transparent;
+ animation: spinner8217 0.8s linear infinite;
+}
+
+@keyframes spinner8217 {
+ to {
+  transform: rotate(360deg);
+ }
+}
+
 </style>

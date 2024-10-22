@@ -1,6 +1,7 @@
 <script>
-    import {pb} from "$lib/auth";
     import { goto } from '$app/navigation';
+    import { clearAuthData } from '$lib/auth';
+
 
     export let show = false;
     export let onConfirm;
@@ -8,13 +9,17 @@
   
     const handleConfirm = async () => {
         try {
-            await pb.authStore.clear(); 
-            onConfirm();
-            goto('/'); 
+            await logout();
+            window.href = '/';
         } catch (error) {
             console.error('Logout failed', error);
         }
     };
+
+    const logout = () => {
+        clearAuthData();
+    }
+
 
     const handleCancel = () => {
         onCancel();

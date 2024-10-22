@@ -1,7 +1,6 @@
 
 <script>
     import { get } from 'svelte/store';
-    import {currentUser, token} from '$lib/auth';
     import { onMount } from 'svelte';
 
 
