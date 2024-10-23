@@ -12,9 +12,11 @@
   "app": {
     "windows": [
       {
-        "title": "timeswift-frontend",
-        "width": 800,
-        "height": 600
+        "title": "TimeSwift",
+        "width": 1440,
+        "height": 800,
+        "minHeight": 600,
+        "minWidth": 1200
       }
     ],
     "security": {
