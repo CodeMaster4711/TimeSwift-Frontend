@@ -1,6 +1,6 @@
 <script>
-    import {currentUser, token} from "$lib/auth.ts";
-    import {pb} from "$lib/auth.ts";
+    import {currentUser, token} from "$lib/auth";
+    import {pb} from "$lib/auth";
     import {get, writable} from "svelte/store";
     import { goto } from '$app/navigation';
 

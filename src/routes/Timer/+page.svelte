@@ -133,7 +133,7 @@
 </style>
 <script>
     import {get} from "svelte/store";
-    import {currentUser, token} from "$lib/auth.ts";
+    import {currentUser, token} from "$lib/auth";
 
     let records = [];
 
