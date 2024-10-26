@@ -14,14 +14,9 @@
     let side = '';
 
     let isCollapsed = true;
-    let activeTab = 'home';
 
     function toggleNavbar() {
         isCollapsed = !isCollapsed;
-    }
-
-    function setActiveTab(tab) {
-        activeTab = tab;
     }
 
 
@@ -75,7 +70,7 @@
 
             html, body {
                 margin: 0;
-                background: #333333;
+                background: #8F8F8F;
             }
 
             #nav-bar-right {
@@ -100,10 +95,6 @@
                 width: var(--navbar-width-collapsed);
             }
 
-            /*#nav-bar-right.visible, #nav-bar-right:hover {
-                width: var(--navbar-width); 
-            }*/
-            
             #nav-bar-right.collapsed .nav-item i {
                 margin: 0 auto;
             }
@@ -201,7 +192,6 @@
                 white-space: nowrap;
             }
 
-
             #nav-bar-right.collapsed .nav-text, #nav-bar-right.collapsed .nav-header {
                 opacity: 0;
                 width: 0;
@@ -214,37 +204,6 @@
                 align-items: center; /* Center vertically */
                 width: 60%; /* Full width to center the content */
             }
-
-            .admin {
-                background: #262626;
-                border-radius: 10px; /* Ecken abrunden */
-                width: 80%; /* Breite anpassen */
-                margin: 0 auto; /* Zentriert das Element horizontal */
-                padding: 10px; /* Innenabstand */
-                transition: background 0.3s, border-radius 0.3s; /* Animation für Hintergrundfarbe und Ecken */
-            }
-
-            
-            .admin.collapsed {
-                background: none;
-                color: #AE0000;
-            }
-
-            .active {
-                position: relative;
-            }
-
-            .active::before {
-                content: '';
-                position: absolute;
-                left: 0;
-                top: 50%;
-                transform: translateY(-50%);
-                width: 2px; /* Breite des Streifens */
-                height: 70%; /* Höhe des Streifens */
-                background-color: red; /* Farbe des Streifens */
-            }
-            
         </style>
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
         <div id="nav-bar-right" class:visible={!isCollapsed} class:collapsed={isCollapsed}>
@@ -254,23 +213,24 @@
             </div>
             <br>
             <div id="bar"></div> <!-- Trennlinie -->
-            <div class="nav-item" class:active={activeTab === 'home'} on:click={() => setActiveTab('home')}>
+            <div class="nav-item">
                     <span class="material-symbols-outlined nav-icon"on:click={homegoto}>home</span>
                     <span class="nav-text"on:click={homegoto}>Home</span>
             </div>
-            <div class="nav-item" class:active={activeTab === 'calendar'} on:click={() => setActiveTab('calendar')}>
+            <div class="nav-item">
+                
                 <span class="material-symbols-outlined nav-icon"on:click={calendargoto}>calendar_today</span>
                 <span class="nav-text animte"on:click={calendargoto}>Calender</span>
             </div>
-            <div class="nav-item" class:active={activeTab === 'timetable'} on:click={() => setActiveTab('timetable')}>
+            <div class="nav-item">
                 <span class="material-symbols-outlined nav-icon"on:click={timetablegoto}>schedule</span>
                 <span class="nav-text"on:click={timetablegoto}>Timetable</span>
             </div>
-            <div class="nav-item" class:active={activeTab === 'database'} on:click={() => setActiveTab('database')}>
+            <div class="nav-item">
                 <span class="material-symbols-outlined nav-icon"on:click={databasegoto}>database</span>
                 <span class="nav-text"on:click={databasegoto}>Database</span>
             </div>
-            <div class="nav-item" class:active={activeTab === 'insights'} on:click={() => setActiveTab('insights')}>
+            <div class="nav-item">
                 <span class="material-symbols-outlined nav-icon"on:click={timergoto}>timer</span>
                 <span class="nav-text"on:click={timergoto}>Timer</span>
             </div>
@@ -300,10 +260,6 @@
             <br>
             <div id="bar"></div> <!-- Trennlinie -->
             <br>
-            <div class="nav-item admin" class:collapsed={isCollapsed}>
-                    <span class="material-symbols-outlined nav-icon">admin_panel_settings</span>
-                    <span class="nav-text">Admin</span>
-            </div>
 
         </div>
     </div>

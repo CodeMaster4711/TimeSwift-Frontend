@@ -43,7 +43,7 @@
     
     .main{
         display: flex;
-        margin-left: 15vw;
+        margin-left: 6vw;
         margin-top: 2vh;
         z-index: 0;
     }
@@ -52,11 +52,19 @@
         top: 1vh;
         position: absolute;
         width: 85.5vw;
-        height: 97vh;
+        height: 99vh;
         background-color: #000;
         z-index: 0;
-        margin-left: 14.5vw;
-        border-radius: 20px 0 0 20px;
+        margin-left: 5.5vw;
+        border-radius: 20px 20px 0 0;
+    }
+    .collapsed .main {
+        margin-left: 50px; /* Adjust as needed */
+    }
+
+    .collapsed .background {
+        width: 100vw;
+        margin-left: 0;
     }
 
     #top1 {

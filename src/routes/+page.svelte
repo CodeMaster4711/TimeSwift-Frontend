@@ -1,5 +1,4 @@
 <script>
-    import { src_url_equal } from "svelte/internal";
     import {goto} from "$app/navigation";
     import { username_store } from '$lib/store';
     import { get } from 'svelte/store';
