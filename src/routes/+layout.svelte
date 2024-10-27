@@ -6,22 +6,34 @@
     import Settings from '$lib/components/settings-lokal.svelte';
     import {goto} from "$app/navigation";
     import {clearAuthData} from '$lib/auth';
+    import { isCollapsed } from '$lib/navbar';
 
     let animation = false;
     let showPopup = false;
     let showConfirmPopup = false;
     let showsettings = false;
     let side = '';
+    let isLoginPage = false;
 
-    let isCollapsed = true;
     let activeTab = 'home';
+    let localIsCollapsed = false; // Local variable
+
+    onMount(() => {
+        // Synchronize local variable with store
+        isCollapsed.subscribe(value => {
+            localIsCollapsed = value;
+        });
+    });
 
     function toggleNavbar() {
-        isCollapsed = !isCollapsed;
+        localIsCollapsed = !localIsCollapsed; // Update local variable
+        isCollapsed.set(localIsCollapsed); // Update the store
     }
 
     function setActiveTab(tab) {
-        activeTab = tab;
+       if(!isLoginPage) {
+           activeTab = tab;
+       }
     }
 
 
@@ -61,9 +73,11 @@
     function timergoto() {goto('/Timer')};
     function homegoto() {goto('/Home')};
 
+
+    
 </script>
 
-{#if $page.url.pathname !== '/routes' && $page.url.pathname !== '/login' && $page.url.pathname !== '/loader'}
+{#if $page.url.pathname !== '/routes' && $page.url.pathname !== '/login' && $page.url.pathname !== '/loader' && $page.url.pathname !== '/'}
     <div>
         <style>
             @import url("https://fonts.googleapis.com/css2?family=Yeon+Sung&display=swap");
@@ -247,7 +261,7 @@
             
         </style>
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
-        <div id="nav-bar-right" class:visible={!isCollapsed} class:collapsed={isCollapsed}>
+        <div id="nav-bar-right" class:visible={!localIsCollapsed} class:collapsed={localIsCollapsed}>
             <div id="header" on:click={toggleNavbar}>
                 <img src="Clock 56x56.png" alt="Logo" /> 
                 <h1 class="nav-header"><span class="time">Time</span><span class="swift">Swift</span></h1>
