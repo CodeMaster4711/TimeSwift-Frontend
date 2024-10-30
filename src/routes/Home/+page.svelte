@@ -9,6 +9,11 @@
     let time = new Date();
     let percentage = 70;
     let localIsCollapsed = false;
+    let isLoaded = false;  
+    let temp = [];
+
+    const currentMonth = new Date().getMonth(); // Get the current month (0-11)
+    console.log(currentMonth);
 
     // Aktualisieren Sie die Zeit jede Sekunde
     setInterval(() => {
@@ -25,38 +30,36 @@
         return `${hours}:${minutes}`;
     }
 
-    let chart: Chart;
+    async function setnormalvalues(temp: number[]) {
+          for(let i = 0; i < temp.length; i++){
+            temp[i] = temp[i] / 5;
+          }
+        return temp;
+    }
 
     onMount(() => {
-        const ctx = document.getElementById('weekBarChart').getContext('2d');
-        chart = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-                datasets: [{
-                    label: 'Hours per Month',
-                    data: [40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150],
-                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                    borderColor: 'rgba(75, 192, 192, 1)',
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                scales: {
-                    y: {
-                        beginAtZero: true
+        setTimeout(() => {
+            isLoaded = true;
+        }, 100); // Delay to start the animation
+
+        const heights = [25, 30, 20, 50, 100, 10, 5, 6, 66, 77, 44, 12]; // Heights in vh
+        const bars = document.querySelectorAll('.bar');
+        setnormalvalues(heights).then(heightbars => {
+            bars.forEach((bar, index) => {
+                if (bar instanceof HTMLElement) {
+                    bar.style.setProperty('height', `${heightbars[index]}vh`);
+                    if (index === currentMonth) {
+                        bar.id = 'current-month'; // Set ID for the current month
+                    } else {
+                        bar.id = `bar${index + 1}`; // Set unique ID for other bars
                     }
+                    setTimeout(() => {
+                        bar.classList.add('loaded');
+                    }, 100); // Delay to start the animation
                 }
-            }
+            });
         });
     });
-
-    onDestroy(() => {
-        if (chart) {
-            chart.destroy();
-        }
-    });
-
 </script>
 <div class:collapsed={localIsCollapsed} class="background"></div>
 <div class:collapsed={localIsCollapsed} class="main">
@@ -101,7 +104,16 @@
         </div>
     </div>
     <div id="weektime">
-        <canvas id="weekBarChart" width="400" height="200"></canvas>
+        <div id="yearstats">
+            <div id="yearstats">
+                {#each Array(12) as _, i}
+                    <div class="bar-container">
+                        <div class="bar" id='{i}'></div>
+                        <div class="monthlabel" id='month-{i}'>{['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][i]}</div>
+                    </div>
+                {/each}
+            </div>
+        </div>
     </div>
     <div id="Stats"></div>
 </div>
@@ -109,6 +121,7 @@
 <style>
     @import './user.css';
     @import './main.css';
+    @import './stats.css';
     
     .main {
         display: flex;
@@ -133,8 +146,9 @@
     .collapsed.background {
         margin-left: 5vw; /* Adjust this value as needed */
     }
+    
 
-
+ 
     canvas {
         max-width: 100%;
     }
