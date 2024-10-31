@@ -1,24 +1,92 @@
-<script>
+<script lang="ts">
     import * as Calendar from 'svelte-calendar';
+    import { onMount, onDestroy } from 'svelte';
+    import { isCollapsed } from '$lib/navbar';
+    import Chart from 'chart.js/auto';
 
     let progress = 0;
     let date = new Date();
     let time = new Date();
     let percentage = 70;
+    let localIsCollapsed = false;
+    let isLoaded = false;  
+    let temp = [];
+
+    const currentMonth = new Date().getMonth(); // Get the current month (0-11)
+    console.log(currentMonth);
 
     // Aktualisieren Sie die Zeit jede Sekunde
     setInterval(() => {
-    time = new Date();
+        time = new Date();
     }, 1000);
+
+    isCollapsed.subscribe(value => {
+        localIsCollapsed = value;
+    });
+
+    function formatTime(date: Date) {
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        return `${hours}:${minutes}`;
+    }
+
+    async function setnormalvalues(temp: number[]) {
+          for(let i = 0; i < temp.length; i++){
+            temp[i] = temp[i] / 5;
+          }
+        return temp;
+    }
+
+    onMount(() => {
+        setTimeout(() => {
+            isLoaded = true;
+        }, 100); // Delay to start the animation
+
+        const heights = [25, 30, 20, 50, 100, 10, 5, 6, 66, 77, 44, 12]; // Heights in vh
+        const bars = document.querySelectorAll('.bar');
+        setnormalvalues(heights).then(heightbars => {
+            bars.forEach((bar, index) => {
+                if (bar instanceof HTMLElement) {
+                    bar.style.setProperty('height', `${heightbars[index]}vh`);
+                    if (index === currentMonth) {
+                        bar.id = 'current-month'; // Set ID for the current month
+                    } else {
+                        bar.id = `bar${index + 1}`; // Set unique ID for other bars
+                    }
+                    setTimeout(() => {
+                        bar.classList.add('loaded');
+                    }, 100); // Delay to start the animation
+                }
+            });
+        });
+    });
 </script>
-<div class="background"></div>
-<div class="main">
+<div class:collapsed={localIsCollapsed} class="background"></div>
+<div class:collapsed={localIsCollapsed} class="main">
     <div id="top1"></div>
     <div id="top2">
         <input placeholder="Search" class="input" />
     </div> 
-    <div id="top3">{time.getHours()}:{time.getMinutes()}</div>    
-    <div id="user"></div>
+    <div id="top3">{formatTime(time)}</div>    
+    <div id="user">
+        <div class="leftuser">
+            <span class="useruser">Basti</span>
+            <br>
+            <span class="email">basti@local.com</span>
+        </div>
+        <div class="centeruser">
+            <span class="user-img"><img src="./Userlogo.png"></span>
+            <br>
+            <span class="role">Admin</span>
+        </div>
+        <div class="rightuser">
+
+            <span class="Hours">Hours: </span><span class="Week">6484h</span>
+
+            <br>
+            <span class="Hours">week:</span> <span class="Week">26h</span>
+        </div>  
+    </div>
     <div id="Ticket"></div>
     <div id="Projects"></div>
     <div id="Calender">
@@ -35,282 +103,54 @@
             </div>
         </div>
     </div>
-    <div id="weektime"></div>
+    <div id="weektime">
+        <div id="yearstats">
+            <div id="yearstats">
+                {#each Array(12) as _, i}
+                    <div class="bar-container">
+                        <div class="bar" id='{i}'></div>
+                        <div class="monthlabel" id='month-{i}'>{['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][i]}</div>
+                    </div>
+                {/each}
+            </div>
+        </div>
+    </div>
     <div id="Stats"></div>
 </div>
 
 <style>
+    @import './user.css';
+    @import './main.css';
+    @import './stats.css';
     
-    .main{
+    .main {
         display: flex;
-        margin-left: 15vw;
+        margin-left: 16vw;
         margin-top: 2vh;
-        z-index: 0;
+        transition: margin-left 0.3s;
     }
-
     .background {
         top: 1vh;
         position: absolute;
-        width: 85.5vw;
-        height: 97vh;
+        width: 94vw;
+        height: 99vh;
         background-color: #000;
         z-index: 0;
-        margin-left: 14.5vw;
-        border-radius: 20px 0 0 20px;
+        margin-left: 15vw;
+        border-radius: 20px 20px 0 0;
+        transition: margin-left 0.3s, width 0.3s;
     }
-
-    #top1 {
-        width: 15vw;
-        height: 8vh;
-        flex-shrink: 0;
-        border-radius: 15px;
-        background: #D9D9D9;
-        z-index: 1;
+    .collapsed.main {
+        margin-left: 6vw; /* Adjust this value as needed */
     }
-    #top2 {
-        width: 25vw;
-        height: 8vh;
-        flex-shrink: 0;
-        border-radius: 15px;
-        background: #F4F6FA;
-        margin-left: 2vw;
-        z-index: 1;
-    }
-    #top3 {
-        width: 13vw;
-        height: 8vh;
-        flex-shrink: 0;
-        border-radius: 15px;
-        background: #313131;
-        margin-left: 2vw;
-        color: #FFF;
-        font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-        font-size: 40px;
-        font-style: normal;
-        font-weight: 700;
-        line-height: normal;
-        z-index: 1;
-        display: flex;
-        justify-content: center; 
-        align-items: center;
-    }
-
-    #user {
-        width: 26vw;
-        height: 25vh;
-        flex-shrink: 0;
-        border-radius: 15px;
-        background: #D9D9D9;
-        margin-left: 1vw;
-        z-index: 1;
-    }
-
-    #Ticket {
-        top: 12vh;
-        position: absolute;
-        width: 27vw;
-        height: 20vh;
-        flex-shrink: 0;
-        border-radius: 15px;
-        background: linear-gradient(90deg, #FC0D0D 6.98%, #960707 95.61%);
-    }
-    #Projects {
-        top: 12vh;
-        position: absolute;
-        width: 28vw;
-        height: 20vh;
-        flex-shrink: 0;
-        border-radius: 15px;
-        background: linear-gradient(270deg, #979797 0%, #313131 97.03%);
-        margin-left: 29vw;
-    }
-
-    #Calender {
-        top: 28vh;
-        position: absolute;
-        width: 26vw;
-        height: 40vh;
-        flex-shrink: 0;
-        border-radius: 15px;
-        background: #2B2B2B;
-        margin-left: 58vw;
-    }
-    #circle1 {
-        top: 34vh;
-        position: absolute;
-        width: 27vw;
-        height: 34vh;
-        flex-shrink: 0;
-        border-radius: 15px;
-        background: #373737;
-        justify-content: center;
-        align-items: center;
-        display: flex;
-    }
-    #circle2 {
-        top: 34vh;
-        position: absolute;
-        width: 28vw;
-        height: 34vh;
-        flex-shrink: 0;
-        border-radius: 15px;
-        background: linear-gradient(127deg, #F00 -1.76%, #490404 123.29%);
-        margin-left: 29vw;
-        justify-content: center;
-        align-items: center;
-        display: flex;
-    }
-    #weektime {
-        top: 70vh;
-        position: absolute;
-        width: 44vw;
-        height: 27vh;
-        flex-shrink: 0;
-        border-radius: 15px;
-        background: #D9D9D9;
-    }
-    #Stats {
-        top: 70vh;
-        position: absolute;
-        width: 39vw;
-        height: 27vh;
-        flex-shrink: 0;
-        border-radius: 15px;
-        background: #D9D9D9;
-        margin-left: 45vw;
-    }
-
-    .input {
-        border: 2px solid transparent;
-        width: 100%;
-        height: 100%;
-        padding-left: 0.8em;
-        outline: none;
-        overflow: hidden;
-        background-color: #f3f3f3;
-        border-radius: 15px;
-        transition: all 0.5s;
-        font-size: 20px;
-        font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-    }
-
-    .input:hover,
-    .input:focus {
-    border: 5px solid #fd0004;
-    box-shadow: 0px 0px 0px 10px rgba(236, 74, 85, 0.2);
-    background-color: white;
-    }
-
-
-
-
-    .timer {
-        position: relative;
-        box-shadow: inset;
-    }
-
-    @property --p{
-        syntax: '<number>';
-        inherits: true;
-        initial-value: 0;
-    }
-
-    .pie {
-        --p:22;
-        --b:24px;
-        --c:#FF0404;
-        --w:240px;
-        width:var(--w);
-        aspect-ratio:1;
-        position:relative;
-        display:inline-grid;
-        margin:10px;
-        place-content:center;
-        font-size:40px;
-        font-weight:bold;
-        font-family:sans-serif;
-        color:var(--light-color);
-        z-index: 1;
-    }
-    .pie:before,
-    .pie:after {
-        content:"";
-        position:absolute;
-        border-radius:50%;
-    }
-    .pie:before {
-        inset:0;
-        background:
-                radial-gradient(farthest-side,#FF0404 98%,#0000) top/var(--b) var(--b) no-repeat,
-                conic-gradient(#FF0404 calc(var(--p)*1%),#0000 0);
-        -webkit-mask:radial-gradient(farthest-side,#0000 calc(99% - var(--b)),#000 calc(100% - var(--b)));
-        mask:radial-gradient(farthest-side,#0000 calc(99% - var(--b)),#000 calc(100% - var(--b)));
-    }
-    .pie:after {
-        inset:calc(50% - var(--b)/2);
-        background:#FF0404;
-        transform:rotate(calc(var(--p)*3.6deg)) translateY(calc(50% - var(--w)/2));
-    }
-    .animate {
-        animation:p 1s .5s both;
-    }
-    @keyframes p {
-        from{--p:0}
-    }
-
-
-    .timer2 {
-        position: relative;
-        box-shadow: inset;
-    }
-
-    @property --p{
-        syntax: '<number>';
-        inherits: true;
-        initial-value: 0;
-    }
-
-    .pie2 {
-        --p:22;
-        --b:24px;
-        --c:#FF0404;
-        --w:240px;
-        width:var(--w);
-        aspect-ratio:1;
-        position:relative;
-        display:inline-grid;
-        margin:10px;
-        place-content:center;
-        font-size:40px;
-        font-weight:bold;
-        font-family:sans-serif;
-        color:var(--light-color);
-        z-index: 1;
-    }
-    .pie2:before,
-    .pie2:after {
-        content:"";
-        position:absolute;
-        border-radius:50%;
-    }
-    .pie2:before {
-        inset:0;
-        background:
-                radial-gradient(farthest-side,#A1A1A1 98%,#0000) top/var(--b) var(--b) no-repeat,
-                conic-gradient(#A1A1A1 calc(var(--p)*1%),#0000 0);
-        -webkit-mask:radial-gradient(farthest-side,#0000 calc(99% - var(--b)),#000 calc(100% - var(--b)));
-        mask:radial-gradient(farthest-side,#0000 calc(99% - var(--b)),#000 calc(100% - var(--b)));
-    }
-    .pie2:after {
-        inset:calc(50% - var(--b)/2);
-        background:#A1A1A1;
-        transform:rotate(calc(var(--p)*3.6deg)) translateY(calc(50% - var(--w)/2));
-    }
-    .animate2 {
-        animation:p 1s .5s both;
-    }
-    @keyframes p {
-        from{--p:0}
+    .collapsed.background {
+        margin-left: 5vw; /* Adjust this value as needed */
     }
     
+
+ 
+    canvas {
+        max-width: 100%;
+    }
+
 </style>

@@ -1,3 +1,4 @@
+<!--
 <style>
     :root {
         --purple-color: #7e30e1;
@@ -133,7 +134,7 @@
 </style>
 <script>
     import {get} from "svelte/store";
-    import {currentUser, token} from "$lib/auth.ts";
+    import {currentUser, token} from "$lib/auth";
 
     let records = [];
 
@@ -291,3 +292,4 @@
         </div>
     </div>
 </div>
+-->

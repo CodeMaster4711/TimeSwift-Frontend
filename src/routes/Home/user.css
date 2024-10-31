@@ -1,0 +1,52 @@
+#user {
+    display: flex;
+    width: 26vw;
+    height: 25vh;
+    flex-shrink: 0;
+    border-radius: 15px;
+    background: #383838;
+    margin-left: 1vw;
+    z-index: 1;
+    color: white;
+    position: relative;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+.leftuser .usreuser, .centeruser .user-img, .rightuser .Hours {
+    font-size: 0.8rem;
+}
+
+.leftuser .email, .centeruser .role, .rightuser .Week {
+    font-size: 0.8rem;
+    color: #acacac;
+}
+
+.leftuser {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    position: absolute;
+    bottom: 1vh;
+    left: 1vw;
+}
+
+.centeruser {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.rightuser {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    position: absolute;
+    bottom: 1vh;
+    right: 1vw;
+}
