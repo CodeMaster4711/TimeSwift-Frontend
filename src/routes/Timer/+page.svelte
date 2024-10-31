@@ -1,3 +1,4 @@
+<!--
 <style>
     :root {
         --purple-color: #7e30e1;
@@ -291,3 +292,4 @@
         </div>
     </div>
 </div>
+-->

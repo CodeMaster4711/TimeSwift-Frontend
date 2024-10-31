@@ -1,3 +1,4 @@
+<!--
 <script>
     import {currentUser, token} from "$lib/auth";
     import {pb} from "$lib/auth";
@@ -184,7 +185,7 @@
     </div>
 </div>
 
-{#if showPopup} <!-- Wenn showPopup wahr ist, wird das Popup-Fenster angezeigt -->
+{#if showPopup}
     <div class="popup">
         <div class="timeselection">
             <input class="Time" type="datetime-local" bind:value={selectedDate01} required>
@@ -521,3 +522,4 @@
     }
 
 </style>
+-->
