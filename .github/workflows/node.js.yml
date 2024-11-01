@@ -1,4 +1,10 @@
-branches: [ "main", "neuer-branch-name" ]
+name: Node.js CI
+
+on:
+  push:
+    branches: [ "main", "neuer-branch-name" ]
+  pull_request:
+    branches: [ "main", "neuer-branch-name" ]
 
 jobs:
   build:
