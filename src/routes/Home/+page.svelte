@@ -11,9 +11,15 @@
     let localIsCollapsed = false;
     let isLoaded = false;  
     let temp = [];
+    let selectedView = 'year';
 
     const currentMonth = new Date().getMonth(); // Get the current month (0-11)
-    console.log(currentMonth);
+    const currentWeek = Math.floor(new Date().getDate() / 7); // Get the current week of the month
+    const currentDay = new Date().getDay(); // Get the current day of the week (0-6)
+
+    const yearValues = [25, 30, 20, 50, 100, 10, 5, 6, 66, 77, 44, 12]; // Heights in vh for year
+    let monthValues = [ 50, 10, 20, 1, 90]; // Heights in vh for month
+    let weekValues = [ 10, 1, 0, 5, 8, 9, 4]; // Heights in vh for week
 
     // Aktualisieren Sie die Zeit jede Sekunde
     setInterval(() => {
@@ -33,8 +39,83 @@
     async function setnormalvalues(temp: number[]) {
           for(let i = 0; i < temp.length; i++){
             temp[i] = temp[i] / 5;
+            if(temp[i] > 100){
+                temp[i] = 100;
+            } else if (temp[i] <= 0){
+                temp[i] = 1;
+            }
           }
         return temp;
+    }
+
+    function getWeeksInMonth(month: number, year: number) {
+        const weeks = [];
+        const firstDate = new Date(year, month, 1);
+        const lastDate = new Date(year, month + 1, 0);
+        const numDays = lastDate.getDate();
+        let start = 1;
+        let end = 7 - firstDate.getDay();
+        while (start <= numDays) {
+            weeks.push({ start, end });
+            start = end + 1;
+            end = end + 7;
+            if (end > numDays) {
+                end = numDays;
+            }
+        }
+        return weeks;
+    }
+
+    function getDaysInWeek(date: Date) {
+        const days = [];
+        const startOfWeek = new Date(date);
+        startOfWeek.setDate(date.getDate() - date.getDay());
+
+        for (let i = 0; i < 7; i++) {
+            const day = new Date(startOfWeek);
+            day.setDate(startOfWeek.getDate() + i);
+            days.push(day.getDate());
+        }
+
+        return days;
+    }
+
+    function selectView(view: string) {
+        selectedView = view;
+        loadValuesForSelectedView();
+    }
+
+    console.log('Current Month:', currentMonth);
+    console.log('Current Week:', currentWeek);
+    console.log('Current Day:', currentDay);
+
+    async function loadValuesForSelectedView() {
+        let values: number[] = [];
+        if (selectedView === 'year') {
+            values = await setnormalvalues([...yearValues]);
+        } else if (selectedView === 'month') {
+            values = await setnormalvalues([...monthValues]);
+        } else if (selectedView === 'week') {
+            values = await setnormalvalues([...weekValues]);
+        }
+
+        const bars = document.querySelectorAll('.bar');
+        bars.forEach((bar, index) => {
+            if (bar instanceof HTMLElement) {
+                bar.style.setProperty('height', `${values[index]}vh`);
+                bar.classList.remove('current'); // Remove current class from all bars
+                if (selectedView === 'year' && index === currentMonth) {
+                    bar.setAttribute('id', 'current');
+                } else if (selectedView === 'month' && index === currentWeek) {
+                    bar.setAttribute('id', 'current');
+                } else if (selectedView === 'week' && index === currentDay - 1) {
+                    bar.setAttribute('id', 'current');
+                }
+                setTimeout(() => {
+                    bar.classList.add('loaded');
+                }, 100); // Delay to start the animation
+            }
+        });
     }
 
     onMount(() => {
@@ -42,23 +123,8 @@
             isLoaded = true;
         }, 100); // Delay to start the animation
 
-        const heights = [25, 30, 20, 50, 100, 10, 5, 6, 66, 77, 44, 12]; // Heights in vh
-        const bars = document.querySelectorAll('.bar');
-        setnormalvalues(heights).then(heightbars => {
-            bars.forEach((bar, index) => {
-                if (bar instanceof HTMLElement) {
-                    bar.style.setProperty('height', `${heightbars[index]}vh`);
-                    if (index === currentMonth) {
-                        bar.id = 'current-month'; // Set ID for the current month
-                    } else {
-                        bar.id = `bar${index + 1}`; // Set unique ID for other bars
-                    }
-                    setTimeout(() => {
-                        bar.classList.add('loaded');
-                    }, 100); // Delay to start the animation
-                }
-            });
-        });
+        // Load values for the initial view
+        loadValuesForSelectedView();
     });
 </script>
 <div class:collapsed={localIsCollapsed} class="background"></div>
@@ -103,19 +169,45 @@
             </div>
         </div>
     </div>
-    <div id="weektime">
+    <div id="Stats">
+        <h1 id="Statsheader">Stats </h1>
+        <div id="Statsselector">
+            <div class="selector" data-view="year" on:click={() => selectView('year')}>Year</div>
+            <div class="selector" data-view="month" on:click={() => selectView('month')}>Month</div>
+            <div class="selector" data-view="week" on:click={() => selectView('week')}>Week</div>
+        </div>    
+        {#if selectedView === 'year'}
         <div id="yearstats">
-            <div id="yearstats">
-                {#each Array(12) as _, i}
+            {#each Array(12) as _, i}
                     <div class="bar-container">
-                        <div class="bar" id='{i}'></div>
+                        <div class="bar"></div>
                         <div class="monthlabel" id='month-{i}'>{['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][i]}</div>
                     </div>
                 {/each}
             </div>
-        </div>
-    </div>
-    <div id="Stats"></div>
+        {/if}
+        {#if selectedView === 'month'}
+            <div id="monthstats">
+                {#each getWeeksInMonth(date.getMonth(), date.getFullYear()) as week, i}
+                    <div class="bar-container">
+                        <div class="bar"></div>
+                        <div class="weeklabel">W{i + 1}</div>
+                    </div>
+                {/each}
+            </div>
+        {/if}
+        {#if selectedView === 'week'}
+            <div id="weekstats">
+                {#each getDaysInWeek(date) as day, i}
+                    <div class="bar-container">
+                        <div class="bar"></div>
+                        <div class="daylabel">D{i + 1}</div>
+                    </div>
+                {/each}
+            </div>
+        {/if}
+    </div>        
+    <div id="weektime"></div>
 </div>
 
 <style>
@@ -146,7 +238,12 @@
     .collapsed.background {
         margin-left: 5vw; /* Adjust this value as needed */
     }
+
+    .bar.current {
+        background: white; /* Apply gradient for the current month */
+    }
     
+
 
  
     canvas {
