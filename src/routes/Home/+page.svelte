@@ -21,6 +21,8 @@
     let monthValues = [ 50, 10, 20, 1, 90]; // Heights in vh for month
     let weekValues = [ 10, 1, 0, 5, 8, 9, 4]; // Heights in vh for week
 
+    const progressValues = [100, 30, 90];
+
     // Aktualisieren Sie die Zeit jede Sekunde
     setInterval(() => {
         time = new Date();
@@ -85,9 +87,18 @@
         loadValuesForSelectedView();
     }
 
-    console.log('Current Month:', currentMonth);
-    console.log('Current Week:', currentWeek);
-    console.log('Current Day:', currentDay);
+    function setProgress(id: string, value: number) {
+        const progressBar = document.getElementById(id);
+        if (progressBar) {
+            progressBar.style.setProperty('--progress-width', value + '%');
+        }
+    }
+    onMount(() => {
+        setProgress('progress-bar-1', progressValues[0]);
+        setProgress('progress-bar-2', progressValues[1]);
+        setProgress('progress-bar-3', progressValues[2]);
+    });
+
 
     async function loadValuesForSelectedView() {
         let values: number[] = [];
@@ -207,14 +218,31 @@
             </div>
         {/if}
     </div>        
-    <div id="weektime"></div>
+    <div id="weektime">
+        <h1 class="weektime_header">Week Performance</h1>
+        <div class="progress">
+                        <div class="weektime_subheader" id="space">Totaltime</div>
+                        <div class="progress-container">
+                            <div class="progress-bar" id="progress-bar-1"></div>
+                        </div>
+                        <div class="weektime_subheader">Intern Time</div>
+                        <div class="progress-container">
+                            <div class="progress-bar" id="progress-bar-2"></div>
+                        </div>
+                        <div class="weektime_subheader">Score</div>
+                        <div class="progress-container">
+                            <div class="progress-bar" id="progress-bar-3"></div>
+                        </div>
+        </div>
+    </div>
 </div>
 
 <style>
     @import './user.css';
     @import './main.css';
     @import './stats.css';
-    
+    @import './weektime.css';
+
     .main {
         display: flex;
         margin-left: 16vw;

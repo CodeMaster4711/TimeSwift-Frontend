@@ -1,0 +1,54 @@
+#weektime {
+    display: flex;
+    overflow: hidden;
+}
+
+.progress-container {
+    width: 90%;
+    background-color: #5B5050;
+    border-radius: 25px;
+    overflow: hidden;
+    height: 5px;
+    margin-bottom: 40px;
+}
+
+.progress-bar {
+    padding-top: 0;
+    height: 100%;
+    width: var(--progress-width, 0); 
+    background: linear-gradient(to right, black, red); /* Farbverlauf von Schwarz nach Rot */
+    transition: width 0.5s ease-in-out;
+    z-index: 10;
+}
+
+.weektime_header {
+    position: absolute;
+    top: 0vh;
+    left: 1vw;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 24px;
+    font-weight: medium;
+    color: #FFFFFF;
+}
+
+.weektime_subheader {
+    top: -20px; /* Positioniert den Subheader direkt über der Progress-Bar */
+    padding: 0 5px; /* Fügt etwas Innenabstand hinzu */
+    color: white; /* Textfarbe */
+    font-size: 13px; /* Schriftgröße */
+    padding-bottom: 1px;
+}
+
+.progress {
+    top: 7vh;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    position: relative;
+    left: 1vw;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+    height: 100%;
+    overflow-y: hidden;
+}
+
