@@ -158,6 +158,53 @@
     let column2 = tickets.slice(4, 8);
     let column3 = tickets.slice(8, 12);
 
+
+    let currentM: number;
+    let currentY: number;
+    let daysInM: (number | string)[] = [];
+    const today = new Date();
+
+    onMount(() => {
+        currentM = today.getMonth();
+        currentY = today.getFullYear();
+        generateCalendar(currentM, currentY);
+    });
+
+    function generateCalendar(month: number, year: number) {
+        daysInM = [];
+        const firstDay = new Date(year, month).getDay();
+        const lastDate = new Date(year, month + 1, 0).getDate();
+
+        for (let i = 0; i < firstDay; i++) {
+            daysInM.push('');
+        }
+
+        for (let i = 1; i <= lastDate; i++) {
+            daysInM.push(i);
+        }
+    }
+
+    function isToday(day: number) {
+        return day === today.getDate() && currentM === today.getMonth() && currentY === today.getFullYear();
+    }
+
+    function previousMonth() {
+        currentM--;
+        if (currentM < 0) {
+            currentM = 11;
+            currentY--;
+        }
+        generateCalendar(currentM, currentY);
+    }
+
+    function nextMonth() {
+        currentM++;
+        if (currentM > 11) {
+            currentM = 0;
+            currentY++;
+        }
+        generateCalendar(currentM, currentY);
+    }
 </script>
 <div class:collapsed={localIsCollapsed} class="background"></div>
 <div class:collapsed={localIsCollapsed} class="main">
@@ -207,6 +254,21 @@
     </div>
     <div id="Projects"></div>
     <div id="Calender">
+        <div class="calendar">
+            <div class="calendar-header">
+                <button on:click={previousMonth}>&lt;</button>
+                <div>{new Date(currentY, currentM).toLocaleString('default', { month: 'long' })} {currentY}</div>
+                <button on:click={nextMonth}>&gt;</button>
+            </div>
+            <div class="calendar-grid">
+                {#each ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'] as day}
+                    <div class="calendar-day">{day}</div>
+                {/each}
+                {#each daysInM as day}
+                    <div class:empty={!day} class:today={isToday(day)}>{day}</div>
+                {/each}
+            </div>
+        </div>
     </div>
     <div id="circle1">
         <div class="timer">
@@ -283,6 +345,7 @@
     @import './stats.css';
     @import './weektime.css';
     @import './tickets.css';
+    @import './calender.css';
 
     .main {
         display: flex;
