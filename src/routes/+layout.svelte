@@ -5,7 +5,6 @@
     import LogoutModal from '$lib/components/logout.svelte';
     import Settings from '$lib/components/settings-lokal.svelte';
     import {goto} from "$app/navigation";
-    import {clearAuthData} from '$lib/auth';
     import { isCollapsed } from '$lib/navbar';
 
     let animation = false;
@@ -44,7 +43,6 @@
         showConfirmPopup = true;
     }
     const logout = () => {
-        clearAuthData();
         window.location.href = '/';
     }
 

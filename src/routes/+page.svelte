@@ -4,7 +4,7 @@
     import { get } from 'svelte/store';
     import Loader from '$lib/components/loader.svelte';
     import {onMount} from "svelte";
-    import { authToken, userData, saveAuthData, clearAuthData } from '$lib/auth';
+    import { token } from '$lib/config';
 
 
   let error = "";
@@ -20,19 +20,19 @@
 
   
   onMount(() => {
-        const token = localStorage.getItem('authToken');
-        console.log('Token:', token);
-        validateToken(token);
+        const tokensession = get(token);
+        console.log('Token:', tokensession);
+        validateToken(tokensession);
     });
 
-    const validateToken = async (token) => {
+    const validateToken = async (sessionToken) => {
         try {
-            console.log('Validating token:', token);
+            console.log('Validating token:', sessionToken);
             const response = await fetch('http://localhost:3030/validate', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
+                    'Authorization': `Bearer ${sessionToken}`
                 }
             });
 
@@ -42,14 +42,14 @@
 
             const data = await response.json();
             if (data.valid) {
-                saveAuthData(token, data.userData);
+                console.log('Token is valid:', sessionToken);
                 goto('/Home');
             } else {
-                clearAuthData();
+                token.set(undefined);
             }
         } catch (e) {
             console.error('Token validation error:', e);
-            clearAuthData();
+            token.set(undefined);
         }
     };
 
@@ -81,8 +81,8 @@
             if (data.success) {
                 username = "";
                 password = "";
+                token.set(data.token);
                 goto('/Home');
-                data.token = authToken;
             } else {
                 throw new Error('Invalid login credentials!');
             }

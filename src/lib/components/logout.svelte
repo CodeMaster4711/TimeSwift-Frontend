@@ -1,6 +1,6 @@
 <script>
     import { goto } from '$app/navigation';
-    import { clearAuthData } from '$lib/auth';
+    import { token } from '$lib/config';
 
 
     export let show = false;
@@ -17,7 +17,7 @@
     };
 
     const logout = () => {
-        clearAuthData();
+        token.set(undefined);
     }
 
 

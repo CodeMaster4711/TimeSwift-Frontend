@@ -4,6 +4,8 @@
     import { isCollapsed } from '$lib/navbar';
     import Chart from 'chart.js/auto';
 
+
+
     let progress = 0;
     let date = new Date();
     let time = new Date();
