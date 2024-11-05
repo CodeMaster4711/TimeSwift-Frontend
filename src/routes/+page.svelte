@@ -27,24 +27,25 @@
 
     const validateToken = async (sessionToken) => {
         try {
-            console.log('Validating token:', sessionToken);
             const response = await fetch('http://localhost:3030/validate', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${sessionToken}`
-                }
+                },
+                body: JSON.stringify({
+                    token: sessionToken,
+                })
             });
 
             if (!response.ok) {
                 throw new Error('Invalid token');
             }
-
-            const data = await response.json();
-            if (data.valid) {
+            console.log('Response:', response);
+            if (response) {
                 console.log('Token is valid:', sessionToken);
                 goto('/Home');
             } else {
+                console.log('Token is invalid:', sessionToken);
                 token.set(undefined);
             }
         } catch (e) {
