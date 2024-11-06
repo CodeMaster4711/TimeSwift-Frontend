@@ -4,7 +4,7 @@
     import { get } from 'svelte/store';
     import Loader from '$lib/components/loader.svelte';
     import {onMount} from "svelte";
-    import { token } from '$lib/config';
+    import { token, fullname, Semail, totalHours, totalInOnWeek, UID} from '$lib/config';
 
 
   let error = "";
@@ -47,10 +47,16 @@
             } else {
                 console.log('Token is invalid:', sessionToken);
                 token.set(undefined);
+                fullname.set(undefined);
+                Semail.set(undefined);
+                UID.set(undefined);
             }
         } catch (e) {
             console.error('Token validation error:', e);
             token.set(undefined);
+            fullname.set(undefined);
+            Semail.set(undefined);
+            UID.set(undefined);
         }
     };
 
@@ -83,6 +89,9 @@
                 username = "";
                 password = "";
                 token.set(data.token);
+                fullname.set(data.firstname + ' ' + data.name);
+                UID.set(data.U_ID);
+                Semail.set(data.email);
                 goto('/Home');
             } else {
                 throw new Error('Invalid login credentials!');

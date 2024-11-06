@@ -3,8 +3,27 @@
     import { onMount, onDestroy } from 'svelte';
     import { isCollapsed } from '$lib/navbar';
     import Chart from 'chart.js/auto';
+    import { get } from 'svelte/store';
+    import { fullname, Semail, totalHours, totalInOnWeek} from '$lib/config';
+
+    let name : string;
+    let email : string;
+    let hours : number;
+    let week : number;
 
 
+    onMount(() => {
+        name = get(fullname);
+        email = get(Semail);
+        hours = get(totalHours);
+        week = get(totalInOnWeek);
+        if(hours == undefined){
+            hours = 0;
+        }
+        if(week == undefined){
+            week = 0;
+        }
+    });
 
     let progress = 0;
     let date = new Date();
@@ -217,9 +236,9 @@
     <div id="top3">{formatTime(time)}</div>    
     <div id="user">
         <div class="leftuser">
-            <span class="useruser">Basti</span>
+            <span class="useruser">{name}</span>
             <br>
-            <span class="email">basti@local.com</span>
+            <span class="email">{email}</span>
         </div>
         <div class="centeruser">
             <span class="user-img"><img src="./Userlogo.png"></span>
@@ -228,10 +247,10 @@
         </div>
         <div class="rightuser">
 
-            <span class="Hours">Hours: </span><span class="Week">6484h</span>
+            <span class="Hours">Hours: </span><span class="Week">{hours}h</span>
 
             <br>
-            <span class="Hours">week:</span> <span class="Week">26h</span>
+            <span class="Hours">week:</span> <span class="Week">{week}h</span>
         </div>  
     </div>
     <div id="Ticket">
