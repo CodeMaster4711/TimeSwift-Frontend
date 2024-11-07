@@ -8,6 +8,7 @@ export const Semail = writable<string | undefined>();
 export const totalHours = writable<number | undefined>();
 export const totalInOnWeek = writable<number | undefined>();
 export const UID = writable<string | undefined>();
+export const ICON = writable<string | undefined>();
 
 load('settings.json', { autoSave: true }).then(async s => {
     store = s;
@@ -17,6 +18,7 @@ load('settings.json', { autoSave: true }).then(async s => {
     totalHours.set((await store.get<{value: number | undefined }>('totalhours'))?.value);
     totalInOnWeek.set((await store.get<{value: number | undefined }>('totalinonweek'))?.value);
     UID.set((await store.get<{value: string | undefined }>('uid'))?.value);
+    ICON.set((await store.get<{value: string | undefined }>('icon'))?.value);
 });
 
 
@@ -49,4 +51,8 @@ totalInOnWeek.subscribe(async value => {
 
 UID.subscribe(async value => {
     await store?.set('uid', {value});
+});
+
+ICON.subscribe(async value => {
+    await store?.set('icon', {value});
 });

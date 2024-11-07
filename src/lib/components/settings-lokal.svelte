@@ -1,23 +1,25 @@
 <!-- Settings_lokal.svelte -->
 <script>
+    // @ts-ignore
     import { onMount } from "svelte";
 
 
 
-    export let showsettings = false;
-    export let settingstoggle;
-    let currentComponent = null;
+  export let showsettings = false;
+  export let settingstoggle;
+  // @ts-ignore
+  let currentComponent = null;
 
-    const loadComponent = async (component) => {
-      switch (component) {
-        case 'account':
-          currentComponent = (await import('./account.svelte')).default;
-          break;
-        // Weitere Komponenten hier hinzufügen
-        default:
-          currentComponent = null;
-      }
-    };
+  const loadComponent = async (component) => {
+    switch (component) {
+      case 'account':
+        currentComponent = (await import('./account.svelte')).default;
+        break;
+      // Weitere Komponenten hier hinzufügen
+      default:
+        currentComponent = null;
+    }
+  };
 </script>
 
 <style>
@@ -27,55 +29,77 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.5);
     display: flex;
+    background-color: transparent;
     align-items: center;
     justify-content: center;
     z-index: 1000;
   }
 
   .popup-content {
-    background: rgb(46, 46, 46);
     color: white;
     padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    width: 600px;
+    width: 80%;
     display: flex;
     flex-direction: column;
-    height: 80vh; /* Höhe des Popups */
+    height: 90%; /* Höhe des Popups */
+    
   }
 
   .menu {
-    width: 30%;
-    border-right: 1px solid #ccc;
-    padding-right: 20px;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    width: 20%;
+    left:5%;
+    padding: 20px;
+    border-right: 1px solid #000000;
+    padding-right: 10px;
+    background-color: rgba(0, 0, 0, 0.7);
+    border-radius: 20px 0 0 20px;
+    backdrop-filter: blur(30px);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    font-size: 1.3em;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   }
 
   .menu h2 {
     margin-bottom: 20px;
+    font-size: 1.5em;
   }
 
   .menu ul {
     list-style: none;
     padding: 0;
+    width: 100%;
   }
 
   .menu ul li {
     margin-bottom: 10px;
+    width: 100%;
   }
 
   .menu ul li a {
-    color: white;
     text-decoration: none;
+    color: white;
+    display: block;
+    padding: 10px;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+  }
+
+  .menu ul li a:hover {
+    background-color: rgba(255, 255, 255, 0.1);
   }
 
   .content {
-    flex-grow: 1; /* Nimmt den verfügbaren Platz ein */
-    padding-left: 20px;
-    overflow-y: auto; /* Ermöglicht Scrollen, wenn der Inhalt zu groß ist */
+    border-radius: 0 20px 20px 0;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    background-color:#383838 ;
+    flex-grow: 1;
+    padding: 20px;
+    overflow-y: auto; /* Ermöglicht das Scrollen, wenn der Inhalt zu groß ist */
   }
-
   .content h2 {
     margin-bottom: 20px;
   }
@@ -97,10 +121,14 @@
   }
 
   .footer {
+    position: absolute;
     display: flex;
     justify-content: flex-end;
     gap: 10px;
+    bottom: 7%;
+    right: 15%;
     padding-top: 10px;
+    z-index: 1001;
   }
 </style>
 
@@ -120,7 +148,6 @@
           </ul>
         </div>
         <div class="content">
-          <h2>Settings</h2>
           {#if currentComponent}
             <svelte:component this={currentComponent} />
           {/if}
