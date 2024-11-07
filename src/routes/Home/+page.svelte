@@ -6,10 +6,10 @@
     import { get } from 'svelte/store';
     import { fullname, Semail, totalHours, totalInOnWeek} from '$lib/config';
 
-    let name : string;
-    let email : string;
-    let hours : number;
-    let week : number;
+    let name : string | undefined;
+    let email : string | undefined;
+    let hours : number | undefined;
+    let week : number  | undefined;
 
 
     onMount(() => {
