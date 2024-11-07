@@ -1,7 +1,23 @@
 <!-- Settings_lokal.svelte -->
 <script>
-  export let showsettings = false;
-  export let settingstoggle;
+    import { onMount } from "svelte";
+
+
+
+    export let showsettings = false;
+    export let settingstoggle;
+    let currentComponent = null;
+
+    const loadComponent = async (component) => {
+      switch (component) {
+        case 'account':
+          currentComponent = (await import('./account.svelte')).default;
+          break;
+        // Weitere Komponenten hier hinzufügen
+        default:
+          currentComponent = null;
+      }
+    };
 </script>
 
 <style>
@@ -95,17 +111,19 @@
         <div class="menu">
           <h2>Menu</h2>
           <ul>
-            <li><a href="#account">Account</a></li>
-            <li><a href="#appearance">Appearance</a></li>
-            <li><a href="#LandB">Billing and Licence</a></li>
-            <li><a href="#Password">Password</a></li>
-            <li><a href="#Sessions">Sessions</a></li>
-            <li><a href="#Organization">Organization</a></li>
+            <li><a href="#account" on:click={() => loadComponent('account')}>Account</a></li>
+            <li><a href="#appearance" on:click={() => loadComponent('appearance')}>Appearance</a></li>
+            <li><a href="#LandB" on:click={() => loadComponent('billing')}>Billing and Licence</a></li>
+            <li><a href="#Password" on:click={() => loadComponent('password')}>Password</a></li>
+            <li><a href="#Sessions" on:click={() => loadComponent('sessions')}>Sessions</a></li>
+            <li><a href="#Organization" on:click={() => loadComponent('organization')}>Organization</a></li>
           </ul>
         </div>
         <div class="content">
           <h2>Settings</h2>
-          <!-- Weitere Einstellungen hier hinzufügen -->
+          {#if currentComponent}
+            <svelte:component this={currentComponent} />
+          {/if}
         </div>
       </div>
       <div class="footer">
