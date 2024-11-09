@@ -95,7 +95,7 @@
   .content {
     border-radius: 0 20px 20px 0;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    background-color:#383838 ;
+    background-color:#2b2b2b ;
     flex-grow: 1;
     padding: 20px;
     overflow-y: auto; /* Ermöglicht das Scrollen, wenn der Inhalt zu groß ist */
@@ -130,6 +130,42 @@
     padding-top: 10px;
     z-index: 1001;
   }
+
+  .close {
+    padding: 10px 20px;
+    background-color: transparent;
+    color: rgb(255, 255, 255);
+    border: 2px solid white;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  .close:hover {
+    padding: 10px 20px;
+    background-color: #ff0000;
+    color: rgb(0, 0, 0);
+    border: 2px solid #ff0000;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  .save {
+    padding: 10px 20px;
+    background-color: transparent;
+    color: rgb(255, 255, 255);
+    border: 2px solid white;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  .save:hover {
+    padding: 10px 20px;
+    background-color: #00ff00;
+    color: rgb(0, 0, 0);
+    border: 2px solid #00ff00;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+
 </style>
 
 {#if showsettings}
@@ -155,8 +191,8 @@
       </div>
       <div class="footer">
         <div class="buttons">
-          <button on:click={settingstoggle}>Close</button>
-          <button on:click={settingstoggle}>Save</button>
+          <button class="close" on:click={settingstoggle}>Close</button>
+          <button class="save" on:click={settingstoggle}>Save</button>
         </div>
       </div>
     </div>
