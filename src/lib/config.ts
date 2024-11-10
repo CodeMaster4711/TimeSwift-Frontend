@@ -9,9 +9,11 @@ export const totalHours = writable<number | undefined>();
 export const totalInOnWeek = writable<number | undefined>();
 export const UID = writable<string | undefined>();
 export const ICON = writable<string | undefined>();
+export const id = writable<string | undefined>();
 
 load('settings.json', { autoSave: true }).then(async s => {
     store = s;
+    id.set((await store.get<{value: string | undefined }>('id'))?.value);
     token.set((await store.get<{value: string | undefined }>('token'))?.value);
     fullname.set((await store.get<{value: string | undefined }>('username'))?.value);
     Semail.set((await store.get<{value: string | undefined }>('email'))?.value);
@@ -21,7 +23,9 @@ load('settings.json', { autoSave: true }).then(async s => {
     ICON.set((await store.get<{value: string | undefined }>('icon'))?.value);
 });
 
-
+id.subscribe(async value => {  
+    await store?.set('id', {value});
+});
 
 token.subscribe(async value => {
     await store?.set('token', {value});

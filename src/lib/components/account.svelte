@@ -2,6 +2,7 @@
   import { onMount } from 'svelte';
   import { get } from 'svelte/store';
   import { fullname, Semail, ICON} from '$lib/config';
+  import { tempfullname , tempemail, tempICON, tempdelete } from '$lib/settings';
 
   let username: string | undefined;
   let tempuserimg: string | undefined;
@@ -21,6 +22,10 @@
     username = get(fullname);
     userimg = get(ICON);
     tempusername = get(fullname);
+    tempfullname.set(username);
+    tempdelete.set(false);
+    tempICON.set(userimg);
+    tempemail.set(oldEmail);
     tempuserimg = userimg;
     newEmail = oldEmail;
   });
@@ -42,6 +47,7 @@
       const reader = new FileReader();
       reader.onload = (e) => {
         tempuserimg= e.target?.result as string;
+        tempICON.set(tempuserimg);
         console.log(userimg);
       };
       reader.readAsDataURL(file);
@@ -60,15 +66,17 @@
     // Hier können Sie die Logik zum Speichern der neuen E-Mail-Adresse hinzufügen
     console.log('Old Email:', oldEmail);
     console.log('New Email:', newEmail);
+    tempemail.set(newEmail);
     showEmailPopup = false;
   };
 
   const handleUsernameChange = () => {
     isLoading = true;
+    tempfullname.set(tempusername);
     setTimeout(() => {
       console.log('New Username:', tempusername);
       isLoading = false;
-    }, 2000); 
+    }, 1000); 
   };
 
   
@@ -83,6 +91,7 @@
   const handleConfirmDelete = () => {
     if (deleteEmail === oldEmail) {
       console.log('Account deleted for email:', deleteEmail);
+      tempdelete.set(true);
       showDeletePopup = false;
     } else {
       alert('E-Mail-Adresse stimmt nicht überein.');

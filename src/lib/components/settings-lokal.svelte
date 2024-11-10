@@ -1,14 +1,28 @@
 <!-- Settings_lokal.svelte -->
-<script>
+<script lang="ts">
+    import { get } from "svelte/store";
     // @ts-ignore
     import { onMount } from "svelte";
+    import { tempfullname, tempICON, tempdelete as tempDeleteStore, tempemail } from "$lib/settings";
+    import { fullname, ICON, Semail, id, token } from "$lib/config";
 
 
 
   export let showsettings = false;
   export let settingstoggle;
+  
+  let tempid: string | undefined;
+  let tempToken: string | undefined;
   // @ts-ignore
   let currentComponent = null;
+
+  onMount (() => {
+    tempid = get(id);
+    tempToken = get(token);
+    tempfullname.set(get(fullname));
+    tempICON.set(get(ICON));
+    tempemail.set(get(Semail));
+  });
 
   const loadComponent = async (component) => {
     switch (component) {
@@ -20,6 +34,48 @@
         currentComponent = null;
     }
   };
+
+  const handleClose = () => {
+    // Temp Stores leeren
+    tempfullname.set('');
+    tempICON.set('');
+    tempDeleteStore.set(false);
+    tempemail.set('');
+    showsettings = false;
+  };
+
+  const handleSave = () => {
+    const response = update(tempid, tempToken);
+    showsettings = false;
+};
+
+  async function update(temp : string | undefined, temptok : string | undefined) {
+    try {
+       const response = await fetch (`http://localhost:3030/userupdate`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          id: temp,
+          token: temptok,
+          fullname: tempfullname,
+          email: tempemail,
+          icon: tempICON,
+          delete: tempDeleteStore,
+        }),
+    });
+    console.log("id", temp , "token", temptok, "fullname", tempfullname, "email", tempemail, "icon", tempICON, "delete", tempDeleteStore);
+    console.log('Update successful', response);
+    fullname.set(get(tempfullname));
+    ICON.set(get(tempICON));
+    Semail.set(get(tempemail));
+    
+  } catch (error) {
+    console.error('Update failed', error);
+}
+}
+
 </script>
 
 <style>
@@ -191,8 +247,8 @@
       </div>
       <div class="footer">
         <div class="buttons">
-          <button class="close" on:click={settingstoggle}>Close</button>
-          <button class="save" on:click={settingstoggle}>Save</button>
+          <button class="close" on:click={handleClose}>Close</button>
+          <button class="save" on:click={handleSave}>Save</button>
         </div>
       </div>
     </div>
