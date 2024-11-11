@@ -1,6 +1,6 @@
 <script>
     import { goto } from '$app/navigation';
-    import { clearAuthData } from '$lib/auth';
+    import { token, fullname, Semail, totalHours, totalInOnWeek, UID} from '$lib/config';
 
 
     export let show = false;
@@ -10,14 +10,19 @@
     const handleConfirm = async () => {
         try {
             await logout();
-            window.href = '/';
+            window.location.href = '/';
         } catch (error) {
             console.error('Logout failed', error);
         }
     };
 
     const logout = () => {
-        clearAuthData();
+        token.set(undefined);
+        fullname.set(undefined);
+        Semail.set(undefined);
+        totalHours.set(undefined);
+        totalInOnWeek.set(undefined);
+        UID.set(undefined);
     }
 
 
@@ -80,3 +85,4 @@
       </div>
     </div>
   </div>
+  

@@ -92,20 +92,20 @@
     align-items: center;
     display: flex;
 }
-#weektime {
+#Stats {
     top: 70vh;
     position: absolute;
     width: 44vw;
-    height: 27vh;
+    height: 29vh;
     flex-shrink: 0;
     border-radius: 15px;
     background: #373737;
 }
-#Stats {
+#weektime {
     top: 70vh;
     position: absolute;
     width: 39vw;
-    height: 27vh;
+    height: 29vh;
     flex-shrink: 0;
     border-radius: 15px;
     background: #383838;

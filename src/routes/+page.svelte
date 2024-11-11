@@ -4,7 +4,7 @@
     import { get } from 'svelte/store';
     import Loader from '$lib/components/loader.svelte';
     import {onMount} from "svelte";
-    import { authToken, userData, saveAuthData, clearAuthData } from '$lib/auth';
+    import { token, fullname, Semail, totalHours, totalInOnWeek, UID, id} from '$lib/config';
 
 
   let error = "";
@@ -20,36 +20,45 @@
 
   
   onMount(() => {
-        const token = localStorage.getItem('authToken');
-        console.log('Token:', token);
-        validateToken(token);
+        const tokensession = get(token);
+        console.log('Token:', tokensession);
+        validateToken(tokensession);
     });
 
-    const validateToken = async (token) => {
+    const validateToken = async (sessionToken) => {
         try {
-            console.log('Validating token:', token);
             const response = await fetch('http://localhost:3030/validate', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                }
+                },
+                body: JSON.stringify({
+                    token: sessionToken,
+                })
             });
 
             if (!response.ok) {
                 throw new Error('Invalid token');
             }
-
-            const data = await response.json();
-            if (data.valid) {
-                saveAuthData(token, data.userData);
+            console.log('Response:', response);
+            if (response) {
+                console.log('Token is valid:', sessionToken);
                 goto('/Home');
             } else {
-                clearAuthData();
+                console.log('Token is invalid:', sessionToken);
+                token.set(undefined);
+                fullname.set(undefined);
+                Semail.set(undefined);
+                UID.set(undefined);
+                id.set(undefined);
             }
         } catch (e) {
             console.error('Token validation error:', e);
-            clearAuthData();
+            token.set(undefined);
+            fullname.set(undefined);
+            Semail.set(undefined);
+            UID.set(undefined);
+            id.set(undefined);
         }
     };
 
@@ -81,8 +90,13 @@
             if (data.success) {
                 username = "";
                 password = "";
+                token.set(data.token);
+                fullname.set(data.firstname + ' ' + data.name);
+                UID.set(data.U_ID);
+                Semail.set(data.email);
+                id.set(data.id);
+
                 goto('/Home');
-                data.token = authToken;
             } else {
                 throw new Error('Invalid login credentials!');
             }

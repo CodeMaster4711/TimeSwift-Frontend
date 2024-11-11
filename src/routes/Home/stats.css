@@ -1,4 +1,4 @@
-#yearstats {
+#yearstats, #monthstats , #weekstats {
     display: flex;
     justify-content: space-between;
     align-items: flex-end; /* Align items to the bottom */
@@ -7,13 +7,20 @@
     position: relative; /* Ensure the container is positioned relative */
     margin: 0 auto;
     font-family: Verdana, Geneva, Tahoma, sans-serif;
+    margin-top: 3vh;
+}
+
+#monthstats, #weekstats {
+    right: 1%;
+    left: 1%;
+    width: 70%;
 }
 
 .bar {
     position: relative; /* Keep them in the document flow */
     margin-left: 0vw; /* Adjust margin-left to a valid value */
     width: 2vw;
-    height: 0.5vh; /* Start with height 0 */
+    min-height: 1vh;
     background-color: #626262;
     border-radius: 8px 8px 0 0;
     transition: height 0.5s ease-out, background-color 0.3s ease; /* Add a transition for the height and background color */
@@ -22,21 +29,21 @@
 
 .bar.loaded {
     height: var(--height); /* Use a CSS variable to set the final height */
+    min-height: 1vh;
 }
 
 .bar:hover {
     background-color: #797979; /* Change color on hover */
 }
-
-.bar.current {
-    background: linear-gradient(180deg, #FF0A0A, #797979) !important; /* Apply gradient for the current month */
+#current {
+    background: linear-gradient(180deg, #FF0A0A, #797979) !important; /* Apply gradient for the current month/week/day */
 }
 
-#current-month {
-    background: linear-gradient(180deg, #FF0A0A, #797979) !important;
-}
 
-.monthlabel {
+
+.monthlabel,
+.daylabel,
+.weeklabel {
     font-family: Verdana, Geneva, Tahoma, sans-serif;
     width: 100%;
     text-align: center;
@@ -45,3 +52,32 @@
     color: #FFFFFF;
 }
 
+#Statsheader {
+    position: absolute;
+    top: 0vh;
+    left: 1vw;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 24px;
+    font-weight: medium;
+    color: #FFFFFF;
+}
+
+#Statsselector {
+    position: absolute;
+    top: 1.5vh;
+    right: 1vw;
+    display: flex; /* Verwende flex, um die Auswahl nebeneinander anzuordnen */
+    align-items: center;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    z-index: 10;
+}
+
+.selector {
+    margin-right: 1vw;
+    cursor: pointer;
+    color: #ffffff79
+}
+
+.selector:active {
+    color: #FFFFFF !important;
+}
