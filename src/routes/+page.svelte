@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import {goto} from "$app/navigation";
     import { username_store } from '$lib/store';
     import { get } from 'svelte/store';
@@ -17,15 +17,20 @@
   let create_password = ""; // Deklaration der create_password-Variable
   let confirm_password = ""; // Deklaration der confirm_password-Variable
   let loading = false;
-
+  let tokensession: string | undefined;
   
-  onMount(() => {
-        const tokensession = get(token);
-        console.log('Token:', tokensession);
-        validateToken(tokensession);
+  token.subscribe(value => {
+        // Weist den Wert des `token` Stores der lokalen Variable `tokensession` zu
+        tokensession = value;
+        // Protokolliert den aktuellen Wert des Tokens in der Konsole
+        console.log('Checking token', tokensession);
+        // Wenn `tokensession` einen Wert hat, wird die `validateToken`-Funktion aufgerufen
+        if (tokensession) {
+            validateToken(tokensession);
+        }
     });
 
-    const validateToken = async (sessionToken) => {
+    const validateToken = async (sessionToken: string) => {
         try {
             const response = await fetch('http://localhost:3030/validate', {
                 method: 'POST',

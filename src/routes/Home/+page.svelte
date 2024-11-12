@@ -13,16 +13,27 @@
 
 
     onMount(() => {
-        name = get(fullname);
-        email = get(Semail);
-        hours = get(totalHours);
-        week = get(totalInOnWeek);
-        if(hours == undefined){
-            hours = 0;
-        }
-        if(week == undefined){
-            week = 0;
-        }
+        fullname.subscribe(value => {
+            name = value;
+        });
+
+        Semail.subscribe(value => {
+            email = value;
+        });
+
+        totalHours.subscribe(value => {
+            hours = value;
+            if (hours == undefined) {
+                hours = 0;
+            }
+        });
+
+        totalInOnWeek.subscribe(value => {
+            week = value;
+            if (week == undefined) {
+                week = 0;
+            }
+        });
     });
 
     let progress = 0;
