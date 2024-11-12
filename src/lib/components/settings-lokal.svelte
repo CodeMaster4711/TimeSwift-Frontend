@@ -16,12 +16,18 @@
   // @ts-ignore
   let currentComponent = null;
 
+  let tfullname: string | undefined;
+  let tICON: string | undefined;
+  let temail: string | undefined;
+  let tdelete: boolean | undefined;
+
   onMount (() => {
+    tfullname = get(tempfullname);
+    tICON = get(tempICON);
+    temail = get(tempemail);
+    tdelete = get(tempDeleteStore);
     tempid = get(id);
     tempToken = get(token);
-    tempfullname.set(get(fullname));
-    tempICON.set(get(ICON));
-    tempemail.set(get(Semail));
   });
 
   const loadComponent = async (component) => {
@@ -44,13 +50,15 @@
     showsettings = false;
   };
 
-  const handleSave = () => {
-    const response = update(tempid, tempToken);
+  const handleSave = async() => {
+    await update(tempid, tempToken, tdelete);
     showsettings = false;
 };
 
-  async function update(temp : string | undefined, temptok : string | undefined) {
+  async function update(temp : string | undefined, temptok : string | undefined, del : boolean | undefined) {
+      console.log("id", temp , "token", temptok, "fullname", tfullname, "email", temail,  "delete", tdelete);
     try {
+       
        const response = await fetch (`http://localhost:3030/userupdate`, {
         method: 'PUT',
         headers: {
@@ -59,17 +67,17 @@
         body: JSON.stringify({
           id: temp,
           token: temptok,
-          fullname: tempfullname,
-          email: tempemail,
-          icon: tempICON,
-          delete: tempDeleteStore,
+          fullname: tfullname,
+          email: temail,
+          icon: tICON,
+          delete: del,
         }),
     });
-    console.log("id", temp , "token", temptok, "fullname", tempfullname, "email", tempemail, "icon", tempICON, "delete", tempDeleteStore);
+    console.log("id", temp , "token", temptok, "fullname", tfullname, "email", temail, "icon", tICON, "delete", tdelete);
     console.log('Update successful', response);
-    fullname.set(get(tempfullname));
-    ICON.set(get(tempICON));
-    Semail.set(get(tempemail));
+    fullname.set(tfullname);
+    ICON.set(tICON);
+    Semail.set(temail);
     
   } catch (error) {
     console.error('Update failed', error);
