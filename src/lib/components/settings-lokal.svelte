@@ -24,6 +24,7 @@
   onMount (() => {
     tfullname = get(tempfullname);
     tICON = get(tempICON);
+    console.log("icon", tICON);
     temail = get(tempemail);
     tdelete = get(tempDeleteStore);
     tempid = get(id);
@@ -51,11 +52,11 @@
   };
 
   const handleSave = async() => {
-    await update(tempid, tempToken, tdelete);
+    await update(tempid, tempToken, tdelete, tICON);
     showsettings = false;
 };
 
-  async function update(temp : string | undefined, temptok : string | undefined, del : boolean | undefined) {
+  async function update(temp : string | undefined, temptok : string | undefined, del : boolean | undefined, icon : string | undefined) {
       console.log("id", temp , "token", temptok, "fullname", tfullname, "email", temail,  "delete", tdelete);
     try {
        
@@ -69,17 +70,28 @@
           token: temptok,
           fullname: tfullname,
           email: temail,
-          icon: tICON,
+          icon: icon,
           delete: del,
         }),
     });
     console.log("id", temp , "token", temptok, "fullname", tfullname, "email", temail, "icon", tICON, "delete", tdelete);
     console.log('Update successful', response);
-    fullname.set(tfullname);
-    ICON.set(tICON);
-    Semail.set(temail);
-    
-  } catch (error) {
+        
+    if(tfullname != undefined) {
+      fullname.set(tfullname);
+      console.log("set fullname", tfullname);
+    }
+    if(tICON != undefined) {
+      ICON.set(tICON);
+      console.log("set icon");
+    }
+    if(temail != undefined) {
+      Semail.set(temail);
+      console.log("set email", temail);
+    }
+  } // Closing brace for try block
+
+  catch (error) {
     console.error('Update failed', error);
 }
 }

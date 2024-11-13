@@ -4,7 +4,8 @@
     import { get } from 'svelte/store';
     import Loader from '$lib/components/loader.svelte';
     import {onMount} from "svelte";
-    import { token, fullname, Semail, totalHours, totalInOnWeek, UID, id} from '$lib/config';
+    import { token, fullname, Semail, totalHours, totalInOnWeek, UID, id, ICON} from '$lib/config';
+    import { IconMenuItem } from "@tauri-apps/api/menu";
 
 
   let error = "";
@@ -100,7 +101,7 @@
                 UID.set(data.U_ID);
                 Semail.set(data.email);
                 id.set(data.id);
-
+                ICON.set(data.icon);
                 goto('/Home');
             } else {
                 throw new Error('Invalid login credentials!');
