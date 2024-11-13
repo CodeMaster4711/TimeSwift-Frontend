@@ -6,7 +6,23 @@
     import { tempfullname, tempICON, tempdelete as tempDeleteStore, tempemail } from "$lib/settings";
     import { fullname, ICON, Semail, id, token } from "$lib/config";
 
+  let userIcon: string | undefined;
+  let userName: string | undefined;
+  let userEmail: string | undefined;
 
+  onMount(() => {
+    ICON.subscribe(value => {
+      userIcon = value;
+    });
+
+    fullname.subscribe(value => {
+      userName = value;
+    });
+
+    Semail.subscribe(value => {
+      userEmail = value;
+    });
+  });
 
   export let showsettings = false;
   export let settingstoggle;
@@ -52,11 +68,21 @@
   };
 
   const handleSave = async() => {
-    await update(tempid, tempToken, tdelete, tICON);
+    const currentFullname = get(tempfullname);
+    const currentIcon = get(tempICON);
+    const currentDelete = get(tempDeleteStore);
+    const currentEmail = get(tempemail);
+
+    if (tempid && tempToken) {
+      await update(tempid, tempToken, currentDelete, currentIcon, currentFullname, currentEmail);
+      showsettings = false;
+    } else {
+      console.error('tempid or tempToken is undefined');
+    }
     showsettings = false;
 };
 
-  async function update(temp : string | undefined, temptok : string | undefined, del : boolean | undefined, icon : string | undefined) {
+  async function update(temp : string | undefined, temptok : string | undefined, del : boolean | undefined, icon : string | undefined, tfullname : string | undefined, email : string | undefined) {
       console.log("id", temp , "token", temptok, "fullname", tfullname, "email", temail,  "delete", tdelete);
     try {
        
@@ -69,12 +95,12 @@
           id: temp,
           token: temptok,
           fullname: tfullname,
-          email: temail,
+          email: email,
           icon: icon,
           delete: del,
         }),
     });
-    console.log("id", temp , "token", temptok, "fullname", tfullname, "email", temail, "icon", tICON, "delete", tdelete);
+    console.log("id", temp , "token", temptok, "fullname", tfullname, "email", temail, "icon", icon, "delete", del);
     console.log('Update successful', response);
         
     if(tfullname != undefined) {
@@ -82,11 +108,11 @@
       console.log("set fullname", tfullname);
     }
     if(tICON != undefined) {
-      ICON.set(tICON);
+      ICON.set(icon);
       console.log("set icon");
     }
     if(temail != undefined) {
-      Semail.set(temail);
+      Semail.set(email);
       console.log("set email", temail);
     }
   } // Closing brace for try block
@@ -242,6 +268,32 @@
   }
 
 
+  .user-info {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    display: flex;
+    align-items: center;
+  }
+
+  .user-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+  }
+
+  .user-details {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .user-details p {
+    margin: 0;
+    font-size: 14px;
+    color: #dddddd;
+  }
+
 </style>
 
 {#if showsettings}
@@ -258,6 +310,15 @@
             <li><a href="#Sessions" on:click={() => loadComponent('sessions')}>Sessions</a></li>
             <li><a href="#Organization" on:click={() => loadComponent('organization')}>Organization</a></li>
           </ul>
+          <div class="user-info">
+            {#if userIcon}
+              <img src={userIcon} alt="User Icon" class="user-icon" />
+            {/if}
+            <div class="user-details">
+              <p>{userName}</p>
+              <p>{userEmail}</p>
+            </div>
+          </div>
         </div>
         <div class="content">
           {#if currentComponent}
