@@ -4,8 +4,10 @@
     import { isCollapsed } from '$lib/navbar';
     import Chart from 'chart.js/auto';
     import { writable, get } from 'svelte/store';
+    import CreateClient from '$lib/components/create-client.svelte';
  
     let localIsCollapsed = false;
+    let show = false;
 
     isCollapsed.subscribe(value => {
         localIsCollapsed = value;
@@ -17,11 +19,7 @@
     ]);
 
     const addCustomer = () => {
-        customers.update(customers => {
-            const newId = customers.length ? customers[customers.length - 1].id + 1 : 1;
-            const newCustomer = { id: newId, name: `Kunde ${newId}`, icon: '👤', customerNumber: `${Math.floor(Math.random() * 100000)}` };
-            return [...customers, newCustomer];
-        });
+       show = true;
     };
 
     const handleCustomerClick = (customer) => {
@@ -29,8 +27,21 @@
     
     };
 
+    const handleCancel = () => {
+        show = false; // Popup schließen
+    };
 
-
+    const handleCreate = (event) => {
+        const newCustomer = event.detail;
+        customers.update(customers => {
+            const newId = customers.length ? customers[customers.length - 1].id + 1 : 1;
+            newCustomer.id = newId;
+            newCustomer.icon = newCustomer.ClientLogo || '👤';
+            newCustomer.customerNumber = `${Math.floor(Math.random() * 100000)}`;
+            return [...customers, newCustomer];
+        });
+        show = false; // Popup schließen
+    };
 </script>
 <div class:collapsed={localIsCollapsed} class="background"></div>
 <div class:collapsed={localIsCollapsed} class="main">
@@ -39,7 +50,13 @@
         <div class="customer-list">
             {#each $customers as customer}
                 <div class="customer" on:click={() => handleCustomerClick(customer)}>
-                    <div class="customer-icon">{customer.icon}</div>
+                    <div class="customer-icon">
+                        {#if customer.icon && customer.icon.startsWith('data:image')}
+                            <img src={customer.icon} alt="Client Logo" class="client-logo" />
+                        {:else}
+                            {customer.icon}
+                        {/if}
+                    </div>
                     <div class="customer-details">
                         <p>{customer.name}</p>
                         <p>{customer.customerNumber}</p>
@@ -50,6 +67,7 @@
         </div>
     </div>
     <div class="databaswindow">
+        <CreateClient {show} on:cancel={handleCancel} on:create={handleCreate} />
     </div>
     
 </div>
@@ -154,5 +172,9 @@
     .customer-details p {
         margin: 0;
         color: #ffffff;
+    }
+    .client-logo {
+        max-width: 50px;
+        max-height: 50px;
     }
 </style>
