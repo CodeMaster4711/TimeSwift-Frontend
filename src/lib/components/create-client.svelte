@@ -1,5 +1,7 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte';
+  import { token} from '$lib/config';
+  import { get } from "svelte/store";
 
   export let show = false;
 
@@ -7,7 +9,7 @@
   let name = '';
   let id = '';
   let address = '';
-
+  let errorMessage = '';  
 
 
   const dispatch = createEventDispatcher();
@@ -16,13 +18,34 @@
     dispatch('cancel');
   };
 
-  const handleCreate = () => {
+  const handleCreate = async () => {
     const clientData = { name, id, address, ClientLogo };
-    dispatch('create', clientData);
-    ClientLogo = '';
-    name = '';
-    id = '';
-    address = '';
+    console.log('Create client', clientData);
+    try {
+      const temptoken = get(token);
+      const response = await fetch('http://localhost:3030/createclient', {
+        method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    name: name,
+                    id: id,
+                    address: address,
+                    logo: ClientLogo,
+                    token: temptoken
+              })
+        });
+        if (response.ok) {
+          dispatch('create', clientData);
+          ClientLogo = '';
+          name = '';
+          id = '';
+          address = '';
+        }
+      } catch (error) {
+        console.error('Create failed', error);
+      }
   };
 
   const handleEditClick = () => {
@@ -37,9 +60,18 @@
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
       const file = input.files[0];
+
+      const maxSize = 40 * 1024; // 40 KB in Bytes
+
+      if (file.size > maxSize) {
+        let errorMessage = 'Die Datei ist zu groß. Maximal zulässig sind 40 KB.';
+        return errorMessage;
+      }
+
       const reader = new FileReader();
       reader.onload = (e) => {
         ClientLogo = e.target?.result as string;
+        errorMessage = '';
       };
       reader.readAsDataURL(file);
     }
@@ -207,6 +239,12 @@
     transition: ease-in-out 0.3s;
     background-color: #F00101;
   }
+
+  .error-message {
+    color: #F00101;
+    font-size: 16px;
+    text-align: center;
+  }
   
 </style>
 
@@ -242,7 +280,10 @@
             {/if}
           </div>
           <button class="button-logo" on:click={handleEditClick}>Logo</button>
-          <input id="fileInput" type="file" accept="image/*" style="display: none;" on:change={handleFileChange} />
+          <input id="fileInput" type="file" accept="image/*" max="" style="display: none;" on:change={handleFileChange} />
+          {#if errorMessage}
+            <div class="error-message">{errorMessage}</div>
+          {/if}
         </div>
       </div>
       <div class="button-container">

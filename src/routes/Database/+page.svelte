@@ -5,18 +5,49 @@
     import Chart from 'chart.js/auto';
     import { writable, get } from 'svelte/store';
     import CreateClient from '$lib/components/create-client.svelte';
- 
+    import { token} from '$lib/config';
+    import type { newMenu } from '@tauri-apps/api/menu/base';
+
     let localIsCollapsed = false;
     let show = false;
+    let temptoken: string | undefined;
 
     isCollapsed.subscribe(value => {
         localIsCollapsed = value;
     });
 
-    const customers = writable([
-        { id: 1, name: 'Kunde 1', icon: '👤', customerNumber: '12345' },
-        { id: 2, name: 'Kunde 2', icon: '👤', customerNumber: '67890' }
-    ]);
+    const customers = writable([]);
+
+    const fetchCustomers = async (T: string ) => {
+        console.log('Token:', T);
+        const response = await fetch(`http://localhost:3030/getclients?token=${T}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        console.log('Response:', response);
+        if (!response.ok) {
+            throw new Error('Error fetching customers');
+        }
+        const data = await response.json();
+        console.log('Data:', data);
+        // Entpacken des verschachtelten Arrays
+        const unpackedData = data.flat();
+        customers.set(unpackedData);
+    };
+
+    onMount(() => {
+
+        token.subscribe(value => {
+           temptoken = value;
+        });
+        if(temptoken != undefined) {
+            fetchCustomers(temptoken);
+        } else {
+            console.error('Token is undefined');
+        }
+    });
 
     const addCustomer = () => {
        show = true;
@@ -33,13 +64,6 @@
 
     const handleCreate = (event) => {
         const newCustomer = event.detail;
-        customers.update(customers => {
-            const newId = customers.length ? customers[customers.length - 1].id + 1 : 1;
-            newCustomer.id = newId;
-            newCustomer.icon = newCustomer.ClientLogo || '👤';
-            newCustomer.customerNumber = `${Math.floor(Math.random() * 100000)}`;
-            return [...customers, newCustomer];
-        });
         show = false; // Popup schließen
     };
 </script>
@@ -51,15 +75,15 @@
             {#each $customers as customer}
                 <div class="customer" on:click={() => handleCustomerClick(customer)}>
                     <div class="customer-icon">
-                        {#if customer.icon && customer.icon.startsWith('data:image')}
-                            <img src={customer.icon} alt="Client Logo" class="client-logo" />
+                        {#if customer.logo && customer.logo.startsWith('data:image')}
+                            <img src={customer.logo} alt="Client Logo" class="client-logo" />
                         {:else}
                             {customer.icon}
                         {/if}
                     </div>
                     <div class="customer-details">
                         <p>{customer.name}</p>
-                        <p>{customer.customerNumber}</p>
+                        <p>{customer.manageid}</p>
                     </div>
                 </div>
             {/each}
