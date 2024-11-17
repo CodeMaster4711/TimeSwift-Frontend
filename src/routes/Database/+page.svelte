@@ -5,12 +5,14 @@
     import Chart from 'chart.js/auto';
     import { writable, get } from 'svelte/store';
     import CreateClient from '$lib/components/create-client.svelte';
+    import ClientDatabase from '$lib/components/client-database.svelte';
     import { token} from '$lib/config';
     import type { newMenu } from '@tauri-apps/api/menu/base';
 
     let localIsCollapsed = false;
     let show = false;
     let temptoken: string | undefined;
+    let selectedCustomer = null;
 
     isCollapsed.subscribe(value => {
         localIsCollapsed = value;
@@ -54,7 +56,7 @@
     };
 
     const handleCustomerClick = (customer) => {
-        console.log('Kunde geklickt:', customer);
+        selectedCustomer = customer;
     
     };
 
@@ -91,7 +93,11 @@
         </div>
     </div>
     <div class="databaswindow">
-        <CreateClient {show} on:cancel={handleCancel} on:create={handleCreate} />
+        {#if selectedCustomer}
+            <ClientDatabase {selectedCustomer} />
+        {:else}
+            <CreateClient {show} on:cancel={handleCancel} on:create={handleCreate} />
+        {/if}
     </div>
     
 </div>
@@ -139,7 +145,6 @@
     .customer-list {
         display: flex;
         flex-direction: column;
-        flex-grow: 1;
         overflow-y: auto; /* Ermöglicht das Scrollen innerhalb des Containers */
         margin-top: 10px;
         scrollbar-width: none; /* Firefox */

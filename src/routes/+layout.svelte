@@ -246,7 +246,7 @@
                 position: relative;
             }
 
-            .active::before {
+            .nav-item.active::before {
                 content: '';
                 position: absolute;
                 left: 0;
