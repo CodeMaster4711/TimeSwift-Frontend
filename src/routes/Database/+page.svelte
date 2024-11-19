@@ -52,6 +52,7 @@
     });
 
     const addCustomer = () => {
+        console.log('Add customer');
        show = true;
     };
 
@@ -155,7 +156,7 @@
         margin-right: 2vw;
         height: 97vh;
         background-color: #1d1d1d;
-        z-index: 1;
+        z-index: 5000;
         border-radius: 20px;
     }
     .full-width-height {
@@ -203,7 +204,9 @@
         color: #ffffff;
     }
     .client-logo {
-        max-width: 50px;
-        max-height: 50px;
+        border-radius: 5px;
+        width: 50px;
+        height: 50px;
+        object-fit: cover;
     }
 </style>

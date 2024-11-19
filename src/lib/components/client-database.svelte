@@ -1,5 +1,8 @@
-<script>
+<script lang="ts">
     export let selectedCustomer;
+    import LocationAdder from './location-bar.svelte';
+    let newLocation = '';
+    let locations: string[] = [];
     let currentTab = 'Informations';
 
     const tabs = ['Informations', 'Networkplan', 'Locations & Sites'];
@@ -7,6 +10,13 @@
     const selectTab = (tab) => {
         currentTab = tab;
     };
+
+    function addLocation() {
+        if (newLocation.trim() !== '') {
+            locations.push(newLocation);
+            newLocation = '';
+        }
+    }    
 </script>
 
 <div class="client-database">
@@ -34,15 +44,17 @@
         <div class="maininfos">
             <h3>Informations</h3>
         </div>    
-    {:else if currentTab === 'Network Plan'}
+    {:else if currentTab === 'Networkplan'}
         <div class="mainnetwork">
-            <h3>Network Plan</h3>
-            <p>Details about the network plan.</p>
+            <div class="selector"> 
+                <LocationAdder {locations} />
+            </div>
         </div>
-    {:else if currentTab === 'Locations'}
+    {:else if currentTab === 'Locations & Sites'}
         <div class="mainsites">
-            <h3>Locations</h3>
-            <p>Details about the locations.</p>
+            <div class="selector"> 
+                <LocationAdder {locations} />
+            </div>
         </div>
     {/if}
 </div>
@@ -60,8 +72,9 @@
     }
     .client-logo {
         border-radius: 10px;
-        max-width: 70px;
-        max-height: 70px;
+        width: 70px;
+        height: 70px;
+        object-fit: cover;
     }
     .client-details {
         color: #ffffff;
@@ -112,7 +125,7 @@
         display: flex;
         flex-direction: column;
     }
-    .maininfos, .mainnetwork, .mainsites {
+    .maininfos {
         color: #ffffff;
         padding: 20px;
         background-color: #292929;
@@ -124,4 +137,7 @@
         scrollbar-width: none; /* Firefox */
         -ms-overflow-style: none;   
     }
+
+    
+
 </style>
