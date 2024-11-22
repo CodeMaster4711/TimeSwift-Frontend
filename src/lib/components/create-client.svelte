@@ -8,8 +8,12 @@
   let ClientLogo = '';
   let name = '';
   let id = '';
-  let address = '';
   let errorMessage = '';  
+  let city = '';
+  let postcode = '';
+  let Street = '';
+  let Housenumber = '';
+  let disc = '';
 
 
   const dispatch = createEventDispatcher();
@@ -19,7 +23,7 @@
   };
 
   const handleCreate = async () => {
-    const clientData = { name, id, address, ClientLogo };
+    const clientData = { name, id, ClientLogo , city, postcode, Street, Housenumber, disc};
     console.log('Create client', clientData);
     try {
       const temptoken = get(token);
@@ -29,11 +33,15 @@
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
+                    token: temptoken,
                     name: name,
                     id: id,
-                    address: address,
                     logo: ClientLogo,
-                    token: temptoken
+                    city: city,
+                    disc: disc,
+                    housenumber: Housenumber,
+                    postcode: postcode,
+                    street: Street
               })
         });
         if (response.ok) {
@@ -41,7 +49,12 @@
           ClientLogo = '';
           name = '';
           id = '';
-          address = '';
+          city = '';
+          postcode = '';
+          Street = '';
+          Housenumber = '';
+          disc = '';
+          errorMessage = '';
         }
       } catch (error) {
         console.error('Create failed', error);
@@ -245,6 +258,11 @@
     font-size: 16px;
     text-align: center;
   }
+
+  .adderss {
+    display: flex;
+    gap: 20px;
+  }
   
 </style>
 
@@ -259,11 +277,30 @@
             <div class="underline"></div>
             <label>Name</label>
           </div>
+        <div class="adderss">
           <div class="input-data">
-            <input type="address" bind:value={address} required>
+            <input type="address" bind:value={Street} required>
             <div class="underline"></div>
-            <label>Address</label>
+            <label>Street</label>
           </div>
+          <div class="input-data">
+            <input type="address" bind:value={Housenumber} required>
+            <div class="underline"></div>
+            <label>Housenumber</label>
+          </div>
+        </div>
+        <div class="adderss">
+          <div class="input-data">
+            <input type="address" bind:value={city} required>
+            <div class="underline"></div>
+            <label>City</label>
+          </div>
+          <div class="input-data">
+            <input type="address" bind:value={postcode} required>
+            <div class="underline"></div>
+            <label>Postcode</label>
+          </div>
+        </div>
           <div class="input-data">
             <input type="text" bind:value={id} required>
             <div class="underline"></div>

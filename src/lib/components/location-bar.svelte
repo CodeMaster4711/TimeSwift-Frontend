@@ -1,6 +1,13 @@
 <script lang="ts">
+    import { onMount } from 'svelte';
+    import { token} from '$lib/config';
+
+    export let clientId: string;
     export let locations: string[] = [];
     let newLocation = '';
+
+
+
 
     function addLocation() {
         if (newLocation.trim() !== '') {
@@ -12,6 +19,34 @@
     function addDummyLocation() {
         locations = [...locations, 'London'];
     }
+
+    async function fetchLocations(id : string) {
+        try {
+            const response = await fetch(`http://localhost:3030/client-locations/${id}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                },
+            });
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            } else {
+                const data = await response.json();
+                if (Array.isArray(data.items)) {
+                    locations = data.items;
+                    console.log(locations);
+                } else {
+                    console.error('Response items are not an array:', data.items);
+                }
+            }
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+    onMount(() => {
+        console.log('Client ID:', clientId);
+        fetchLocations(clientId);
+    });
 </script>
 <div class="main">
     <div class="location-bar">

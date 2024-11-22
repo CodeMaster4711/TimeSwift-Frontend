@@ -5,6 +5,7 @@
     import Chart from 'chart.js/auto';
     import { writable, get } from 'svelte/store';
     import CreateClient from '$lib/components/create-client.svelte';
+    import LocationBar from '$lib/components/location-bar.svelte';
     import ClientDatabase from '$lib/components/client-database.svelte';
     import { token} from '$lib/config';
     import type { newMenu } from '@tauri-apps/api/menu/base';
@@ -96,12 +97,13 @@
     <div class="databaswindow">
         {#if selectedCustomer}
             <ClientDatabase {selectedCustomer} />
+            <LocationBar clientId={selectedCustomer.id} />
         {:else}
             <CreateClient {show} on:cancel={handleCancel} on:create={handleCreate} />
         {/if}
     </div>
-    
 </div>
+
 
 <style>
 
