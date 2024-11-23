@@ -97,7 +97,6 @@
     <div class="databaswindow">
         {#if selectedCustomer}
             <ClientDatabase {selectedCustomer} />
-            <LocationBar clientId={selectedCustomer.id} />
         {:else}
             <CreateClient {show} on:cancel={handleCancel} on:create={handleCreate} />
         {/if}

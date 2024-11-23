@@ -1,10 +1,13 @@
 <script lang="ts">
     import { onMount } from 'svelte';
     import { token} from '$lib/config';
+    import { get } from 'svelte/store';
 
     export let clientId: string;
     export let locations: string[] = [];
     let newLocation = '';
+    let temptoken: string | undefined;
+    temptoken = get(token);
 
 
 
@@ -20,19 +23,26 @@
         locations = [...locations, 'London'];
     }
 
-    async function fetchLocations(id : string) {
+    async function fetchLocations(id: string, T: string | undefined) {
+        if (T == undefined) {
+            console.error('Token is undefined');
+            return false;
+        }
         try {
-            const response = await fetch(`http://localhost:3030/client-locations/${id}`, {
+            console.log('Token:', T);
+            const response = await fetch(`http://localhost:3030/clientlocations?token=${T}&clientId=${id}`, {
+                method: 'GET',
                 headers: {
-                    'Authorization': `Bearer ${token}`
-                },
+                    'Content-Type': 'application/json'
+                }
             });
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             } else {
+                console.log('Response:', response);
                 const data = await response.json();
                 if (Array.isArray(data.items)) {
-                    locations = data.items;
+                    locations = data.items.flat(); // Flatten the array if it's nested
                     console.log(locations);
                 } else {
                     console.error('Response items are not an array:', data.items);
@@ -44,8 +54,8 @@
     }
 
     onMount(() => {
-        console.log('Client ID:', clientId);
-        fetchLocations(clientId);
+        console.log('Client ID location-bar:', clientId);
+        fetchLocations(clientId, temptoken);
     });
 </script>
 <div class="main">
@@ -53,7 +63,7 @@
         <ul class="location-list">
             <div class="header">Sites</div>
             {#each locations as location}
-                <li class="location-item">{location}</li>
+                <li class="location-item">{location.city}</li>
             {/each}
             <button class="addlocation" on:click={addDummyLocation}>+</button>
         </ul>

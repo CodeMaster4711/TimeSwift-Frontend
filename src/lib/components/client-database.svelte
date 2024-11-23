@@ -7,6 +7,10 @@
 
     const tabs = ['Informations', 'Networkplan', 'Locations & Sites'];
 
+    $: if (selectedCustomer) {
+        currentTab = 'Informations';
+    }
+
     const selectTab = (tab) => {
         currentTab = tab;
     };
@@ -47,13 +51,13 @@
     {:else if currentTab === 'Networkplan'}
         <div class="mainnetwork">
             <div class="selector"> 
-                <LocationAdder {locations} />
+                <LocationAdder {locations} clientId={selectedCustomer.id}/>
             </div>
         </div>
     {:else if currentTab === 'Locations & Sites'}
         <div class="mainsites">
             <div class="selector"> 
-                <LocationAdder {locations} />
+                <LocationAdder {locations} clientId={selectedCustomer.id}/>
             </div>
         </div>
     {/if}
