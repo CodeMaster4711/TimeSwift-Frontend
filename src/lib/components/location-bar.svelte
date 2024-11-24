@@ -9,19 +9,23 @@
     let temptoken: string | undefined;
     temptoken = get(token);
 
-
+    let mapUrl = '';
 
 
     function addLocation() {
         if (newLocation.trim() !== '') {
             locations = [...locations, newLocation];
             newLocation = '';
+            updateMapUrl();
         }
     }
 
+
     function addDummyLocation() {
         locations = [...locations, 'London'];
+        updateMapUrl();
     }
+
 
     async function fetchLocations(id: string, T: string | undefined) {
         if (T == undefined) {
@@ -44,12 +48,19 @@
                 if (Array.isArray(data.items)) {
                     locations = data.items.flat(); // Flatten the array if it's nested
                     console.log(locations);
+                    updateMapUrl();
                 } else {
                     console.error('Response items are not an array:', data.items);
                 }
             }
         } catch (err) {
             console.error(err);
+        }
+    }
+    function updateMapUrl(city: string, ) {
+        if (location) {
+            const { lat, lon } = location;
+            mapUrl = `https://www.openstreetmap.org/export/embed.html?bbox=${lon-0.05},${lat-0.05},${lon+0.05},${lat+0.05}&layer=mapnik&marker=${lat},${lon}`;
         }
     }
 
@@ -63,16 +74,25 @@
         <ul class="location-list">
             <div class="header">Sites</div>
             {#each locations as location}
-                <li class="location-item">{location.city}</li>
+                 <li class="location-item" on:click={() => updateMapUrl(location)}>{location.city}</li>
             {/each}
             <button class="addlocation" on:click={addDummyLocation}>+</button>
         </ul>
     </div>
     <div class="datawindow">
         <h1>Location</h1>
+        {#if mapUrl}
+            <iframe src={mapUrl}></iframe>
+         {/if}
     </div> 
 </div>
 <style>
+
+    iframe {
+        width: 100%;
+        height: 400px;
+        border: none;
+    }
     .main {
        display: flex;
        flex-direction: row;
