@@ -4,25 +4,41 @@
     import { isCollapsed } from '$lib/navbar';
     import Chart from 'chart.js/auto';
     import { get } from 'svelte/store';
-    import { fullname, Semail, totalHours, totalInOnWeek} from '$lib/config';
+    import { fullname, Semail, totalHours, totalInOnWeek, ICON} from '$lib/config';
 
     let name : string | undefined;
     let email : string | undefined;
     let hours : number | undefined;
     let week : number  | undefined;
+    let usericon : string | undefined;
 
 
     onMount(() => {
-        name = get(fullname);
-        email = get(Semail);
-        hours = get(totalHours);
-        week = get(totalInOnWeek);
-        if(hours == undefined){
-            hours = 0;
-        }
-        if(week == undefined){
-            week = 0;
-        }
+        fullname.subscribe(value => {
+            name = value;
+        });
+
+        Semail.subscribe(value => {
+            email = value;
+        });
+
+        totalHours.subscribe(value => {
+            hours = value;
+            if (hours == undefined) {
+                hours = 0;
+            }
+        });
+
+        totalInOnWeek.subscribe(value => {
+            week = value;
+            if (week == undefined) {
+                week = 0;
+            }
+        });
+
+        ICON.subscribe(value => {
+            usericon = value;
+        });
     });
 
     let progress = 0;
@@ -241,7 +257,12 @@
             <span class="email">{email}</span>
         </div>
         <div class="centeruser">
-            <span class="user-img"><img src="./Userlogo.png"></span>
+            <span class="user-img">
+                {#if usericon}
+                    <img src={usericon}  class="userimgfull"/>
+                {:else}
+                    <img src="./Userlogo.png" />
+                {/if}
             <br>
             <span class="role">Admin</span>
         </div>
@@ -394,6 +415,12 @@
 
     .bar.current {
         background: white; /* Apply gradient for the current month */
+    }
+
+    .userimgfull {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
     }
     
 

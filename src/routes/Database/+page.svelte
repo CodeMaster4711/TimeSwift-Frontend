@@ -1,281 +1,213 @@
+<script lang="ts">
+    import * as Calendar from 'svelte-calendar';
+    import { onMount, onDestroy } from 'svelte';
+    import { isCollapsed } from '$lib/navbar';
+    import Chart from 'chart.js/auto';
+    import { writable, get } from 'svelte/store';
+    import CreateClient from '$lib/components/create-client.svelte';
+    import LocationBar from '$lib/components/location-bar.svelte';
+    import ClientDatabase from '$lib/components/client-database.svelte';
+    import { token} from '$lib/config';
+    import type { newMenu } from '@tauri-apps/api/menu/base';
 
-<script>
-    import { get } from 'svelte/store';
-    import { onMount } from 'svelte';
+    let localIsCollapsed = false;
+    let show = false;
+    let temptoken: string | undefined;
+    let selectedCustomer = null;
 
+    isCollapsed.subscribe(value => {
+        localIsCollapsed = value;
+    });
 
-    let records = [];
+    const customers = writable([]);
 
-    async function fetchData() {
-        try {
-            const response = await fetch('http://localhost:3030/pocketbase-data', {
-                headers: {
-                    'Authorization':`Bearer ${get(token)}`
-                },
-                cors: 'no-cors',
-            });
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            } else {
-                const data = await response.json();
-                if (Array.isArray(data.items)) {
-                    records = data.items;
-                    console.log(records);
-                } else {
-                    console.error('Response items are not an array:', data.items);
-                }
+    const fetchCustomers = async (T: string ) => {
+        console.log('Token:', T);
+        const response = await fetch(`http://localhost:3030/getclients?token=${T}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
             }
-        } catch (err) {
-            console.error(err);
+        });
+        console.log('Response:', response);
+        if (!response.ok) {
+            throw new Error('Error fetching customers');
         }
-    }
-    fetchData();
-    function formatDoc(cmd, value=null) {
-        if(value) {
-            document.execCommand(cmd, false, value);
+        const data = await response.json();
+        console.log('Data:', data);
+        // Entpacken des verschachtelten Arrays
+        const unpackedData = data.flat();
+        customers.set(unpackedData);
+    };
+
+    onMount(() => {
+
+        token.subscribe(value => {
+           temptoken = value;
+        });
+        if(temptoken != undefined) {
+            fetchCustomers(temptoken);
         } else {
-            document.execCommand(cmd);
+            console.error('Token is undefined');
         }
-    }
+    });
 
+    const addCustomer = () => {
+        console.log('Add customer');
+       show = true;
+    };
 
+    const handleCustomerClick = (customer) => {
+        selectedCustomer = customer;
+    
+    };
 
+    const handleCancel = () => {
+        show = false; // Popup schließen
+    };
 
+    const handleCreate = (event) => {
+        const newCustomer = event.detail;
+        show = false; // Popup schließen
+    };
 </script>
-
-<div class="main">
-    <div class="background_cards">
-        <div class="card1">
-            <div class="titel">Clients</div>
-            <div class="elements_card1">
-                <div class="color-strip"></div>
-                {#each records as client (client.id)}
-                    <a class="element" href={`/client/${client.Client_Number}`}>{client.Client_Number.toString().padStart(5, '0')}--{client.Name}</a>
-                {/each}
-            </div>
+<div class:collapsed={localIsCollapsed} class="background"></div>
+<div class:collapsed={localIsCollapsed} class="main">
+    <div class="selector">
+        <div class="header">Clients</div>
+        <div class="customer-list">
+            {#each $customers as customer}
+                <div class="customer" on:click={() => handleCustomerClick(customer)}>
+                    <div class="customer-icon">
+                        {#if customer.logo && customer.logo.startsWith('data:image')}
+                            <img src={customer.logo} alt="Client Logo" class="client-logo" />
+                        {:else}
+                            {customer.icon}
+                        {/if}
+                    </div>
+                    <div class="customer-details">
+                        <p>{customer.name}</p>
+                        <p>{customer.manageid}</p>
+                    </div>
+                </div>
+            {/each}
+            <button class="addcustomer" on:click={addCustomer}>+</button>
         </div>
-        <div class="card2">
-            <div class="titel2">Database</div>
-        </div>
+    </div>
+    <div class="databaswindow">
+        {#if selectedCustomer}
+            <ClientDatabase {selectedCustomer} />
+        {:else}
+            <CreateClient {show} on:cancel={handleCancel} on:create={handleCreate} />
+        {/if}
     </div>
 </div>
 
+
 <style>
-    :root {
-        --purple-color: #7e30e1;
-        --light-purple-color: #E26EE5;
-        --light-light-color: #ffffff;
-        --dark-dark-color: #000000;
-        --gradient--purple: linear-gradient(to bottom, var(--purple-color), var(--light-purple-color), var(--light-light-color));
-    }
-    .main{
+
+    .main {
+        font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
         display: flex;
-        margin-left: 10vw;
+        margin-left: 16vw;
+        margin-top: 2vh;
+        transition: margin-left 0.3s;
+        flex-direction: row;
+    }
+    .background {
+        top: 1vh;
+        position: absolute;
+        width: 94vw;
+        height: 99vh;
+        background-color: #000;
         z-index: 0;
+        margin-left: 15vw;
+        border-radius: 20px 20px 0 0;
+        transition: margin-left 0.3s, width 0.3s;
     }
-    .card1{
+    .collapsed.main {
+        margin-left: 6vw; /* Adjust this value as needed */
+    }
+    .collapsed.background {
+        margin-left: 5vw; /* Adjust this value as needed */
+    }
+
+
+    .selector {
         display: flex;
         flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        width: 25vw;
-        height: 97vh;
-        background: #1a1a1a;
+        width: 300px;
+        height: 95vh;
+        background-color: #1d1d1d;
+        z-index: 1;
         border-radius: 20px;
-        box-shadow: white 0px 0px 10px;
-        margin-top: 2vh;
+        margin-right: 1vw;
+        padding: 10px;
     }
-    .card2{
+    .customer-list {
         display: flex;
         flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        width: 87vw;
+        overflow-y: auto; /* Ermöglicht das Scrollen innerhalb des Containers */
+        margin-top: 10px;
+        scrollbar-width: none; /* Firefox */
+        -ms-overflow-style: none;  
+    }
+    .databaswindow {
+        flex-grow: 1;
+        margin-right: 2vw;
         height: 97vh;
-        background: #1a1a1a;
+        background-color: #1d1d1d;
+        z-index: 5000;
         border-radius: 20px;
-        box-shadow: white 0px 0px 10px;
-        margin-top: 2vh;
+    }
+    .full-width-height {
+        width: 100%; /* Volle Breite des Containers */
+        height: 50px;
+    }
+    .addcustomer {
+        background-color: transparent;
+        border: 2px dashed #f7f7f7;
+        border-radius: 4px;
+        color: rgb(255, 255, 255);
+        font-size: 40px;
+        margin-top: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+    }
+    .addcustomer:hover {
+        border: 2px dashed #940000;
+        color: #940000;
+    }
+    .header {
+        font-weight: bold;
+        color: rgb(255, 255, 255);
+        font-size: 30px;
+        margin-top: 10px;
         margin-left: 10px;
+    }
+    .customer {
+        display: flex;
+        align-items: center;
+        background-color: #2d2d2d;
+        border-radius: 4px;
+        padding: 10px;
+        margin-top: 10px;
+        cursor: pointer;
+    }
+    .customer-icon {
+        font-size: 30px;
         margin-right: 10px;
     }
-
-    .background_cards{
-        display: flex;
-        flex-direction: row;
-        justify-content: center;
-        align-items: center;
-        width: 90vw;
-    }
-    .elements_card1 {
-        font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-        font-size: 20px;
-        display: flex;
-        flex-direction: column;
-        justify-content: start;
-        align-items: center;
-        width: 90%;
-        height: 90%;
-        overflow-y: auto;
-        margin-top: 10px;
-        margin-left: 20px;
-
-    }
-    .elements_card1 {
-    position: relative;
-    /* Rest of your styles */
-    }
-
-    .color-strip {
-        position: fixed;
-        z-index: 1;
-        left: 12vw;
-        top: 6vh;
-        border-radius: 10px;
-        bottom: 5vh;
-        width: 7px;
-        background: var(--gradient-red);
-    }
-
-    .element {
-        text-decoration: none;
-        color: white;
-        padding: 2px;
-        margin: 5px;
-        border-radius: 5px;
-        transition: background 0.3s, color 0.3s;
-    }
-    .element:hover {
-        background: lightgray;
-        width: 80%;
-        color: black;
-    }
-    .titel {
-        font-size: 30px;
-        color: var(--light-light-color);
-        margin-top: 10px;
-        font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-    }
-    .titel2 {
-        font-size: 30px;
-        color: var(--light-light-color);
-        margin-top: 10px;
-        font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-    }
-
-    * {
+    .customer-details p {
         margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-        font-family: 'Poppins', sans-serif;
+        color: #ffffff;
     }
-
-    body {
-        background: #ddd;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        min-height: 100vh;
-    }
-
-    li {
-        margin-left: 16px;
-    }
-
-    a {
-        cursor: pointer;
-    }
-
-
-
-
-    .container {
-        max-width: 991px;
-        width: 100%;
-        background: #fff;
-        border-radius: 8px;
-        overflow: hidden;
-    }
-    .toolbar {
-        padding: 16px;
-        background: #eee;
-    }
-    .toolbar .head {
-        display: flex;
-        grid-gap: 10px;
-        margin-bottom: 16px;
-        flex-wrap: wrap;
-    }
-    .toolbar .head > input {
-        max-width: 100px;
-        padding: 6px 10px;
-        border-radius: 6px;
-        border: 2px solid #ddd;
-        outline: none;
-    }
-    .toolbar .head select {
-        background: #fff;
-        border: 2px solid #ddd;
-        border-radius: 6px;
-        outline: none;
-        cursor: pointer;
-    }
-    .toolbar .head .color {
-        background: #fff;
-        border: 2px solid #ddd;
-        border-radius: 6px;
-        outline: none;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        grid-gap: 6px;
-        padding: 0 10px;
-    }
-    .toolbar .head .color span {
-        font-size: 14px;
-    }
-    .toolbar .head .color input {
-        border: none;
-        padding: 0;
-        width: 26px;
-        height: 26px;
-        background: #fff;
-        cursor: pointer;
-    }
-    .toolbar .head .color input::-moz-color-swatch {
-        width: 20px;
-        height: 20px;
-        border: none;
-        border-radius: 50%;
-    }
-    .toolbar .btn-toolbar {
-        display: flex;
-        flex-wrap: wrap;
-        align-items: center;
-        grid-gap: 10px;
-    }
-    .toolbar .btn-toolbar button {
-        background: #fff;
-        border: 2px solid #ddd;
-        border-radius: 6px;
-        cursor: pointer;
-        width: 40px;
-        height: 40px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 18px;
-    }
-    .toolbar .btn-toolbar button:hover {
-        background: #f3f3f3;
-    }
-    #content {
-        padding: 16px;
-        outline: none;
-        max-height: 50vh;
-        overflow: auto;
-    }
-    #show-code[data-active="true"] {
-        background: #eee;
+    .client-logo {
+        border-radius: 5px;
+        width: 50px;
+        height: 50px;
+        object-fit: cover;
     }
 </style>

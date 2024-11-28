@@ -18,16 +18,25 @@
   let deleteEmail = '';
 
   onMount(() => {
-    oldEmail = get(Semail);
-    username = get(fullname);
-    userimg = get(ICON);
-    tempusername = get(fullname);
-    tempfullname.set(username);
+    Semail.subscribe(value => {
+        oldEmail = value;
+        tempemail.set(value);
+        newEmail = value;
+    });
+
+    fullname.subscribe(value => {
+        username = value;
+        tempusername = value;
+        tempfullname.set(value);
+    });
+
+    ICON.subscribe(value => {
+        userimg = value;
+        tempuserimg = value;
+        tempICON.set(value);
+    });
+
     tempdelete.set(false);
-    tempICON.set(userimg);
-    tempemail.set(oldEmail);
-    tempuserimg = userimg;
-    newEmail = oldEmail;
   });
 
 
@@ -46,9 +55,33 @@
       const file = input.files[0];
       const reader = new FileReader();
       reader.onload = (e) => {
-        tempuserimg= e.target?.result as string;
-        tempICON.set(tempuserimg);
-        console.log(userimg);
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          const ctx = canvas.getContext('2d');
+          const maxWidth = 300; // Maximale Breite des Bildes
+          const maxHeight = 300; // Maximale Höhe des Bildes
+          let width = img.width;
+          let height = img.height;
+
+          if (width > height) {
+            if (width > maxWidth) {
+              height *= maxWidth / width;
+              width = maxWidth;
+            }
+          } else {
+            if (height > maxHeight) {
+              width *= maxHeight / height;
+              height = maxHeight;
+            }
+          }
+          canvas.width = width;
+          canvas.height = height;
+          ctx?.drawImage(img, 0, 0, width, height);
+          tempuserimg = canvas.toDataURL('image/webp');
+          tempICON.set(tempuserimg);
+        };
+        img.src = e.target?.result as string;
       };
       reader.readAsDataURL(file);
     }
