@@ -1,6 +1,8 @@
 <script lang="ts">
     export let selectedCustomer;
     import LocationAdder from './location-bar.svelte';
+    import Network from './network.svelte';
+    import Networkadder from './network.svelte';
     let newLocation = '';
     let locations: string[] = [];
     let currentTab = 'Informations';
@@ -51,7 +53,7 @@
     {:else if currentTab === 'Networkplan'}
         <div class="mainnetwork">
             <div class="selector"> 
-                <LocationAdder {locations} clientId={selectedCustomer.id}/>
+                <Network {locations} clientId={selectedCustomer.id}/>
             </div>
         </div>
     {:else if currentTab === 'Locations & Sites'}

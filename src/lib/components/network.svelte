@@ -8,7 +8,6 @@
     let newLocation = '';
     let temptoken: string | undefined;
     temptoken = get(token);
-    let selectedLocation = null;
 
     let mapUrl = '';
 
@@ -17,14 +16,12 @@
         if (newLocation.trim() !== '') {
             locations = [...locations, newLocation];
             newLocation = '';
-            updateMapUrl();
         }
     }
 
 
     function addDummyLocation() {
         locations = [...locations, 'London'];
-        updateMapUrl();
     }
 
 
@@ -54,14 +51,8 @@
                 }
             }
         } catch (err) {
-            console.error(err);
+            console.error(err);W
         }
-    }
-
-    function getinfos(location) {
-        console.log('Get Infos');
-        selectedLocation = location;
-        console.log(selectedLocation);
     }
 
     onMount(() => {
@@ -74,26 +65,13 @@
         <ul class="location-list">
             <div class="header">Sites</div>
             {#each locations as location}
-                <li class="location-item" on:click={() => getinfos(location)}>{location.city}</li>
+                 <li class="location-item" on:click={() => updateMapUrl(location)}>{location.city}</li>
             {/each}
             <button class="addlocation" on:click={addDummyLocation}>+</button>
         </ul>
     </div>
     <div class="datawindow">
-        <h1>Location</h1>
-        {#if mapUrl}
-            <iframe src={mapUrl}></iframe>
-        {/if}
-        {#if selectedLocation}
-            <div class="address">
-                <h1>Address</h1>
-                <span>{selectedLocation.street} {selectedLocation.housenumber}</span> <br>
-                <span>{selectedLocation.city} {selectedLocation.postcode}</span>
-            </div>
-            <div class="description">
-                <!-- Weitere Informationen zur Location -->
-            </div>
-        {/if}
+        <h1>Network</h1>
     </div> 
 </div>
 <style>
