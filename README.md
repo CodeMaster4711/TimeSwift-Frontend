@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="static/timeswift-logo.png" alt="TimeSwift Logo" width="200"/>
+  <img src="static/logo.png" alt="TimeSwift Logo" width="200"/>
   
   # TimeSwift
   
@@ -45,7 +45,7 @@ npm run tauri dev
 
 # Produktions-Build erstellen
 npm run tauri build
-
+```
 
 ## 📦 Installation
 
@@ -58,7 +58,7 @@ cd timeswift
 
 # Dependencies installieren
 npm install
-
+```
 
 ## 📁 Projektstruktur
 
