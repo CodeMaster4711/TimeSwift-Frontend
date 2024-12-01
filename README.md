@@ -3,7 +3,7 @@
   
   # TimeSwift
   
-  [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+  [![License: Custom](https://img.shields.io/badge/License-Custom-orange.svg)](./LICENSE)
   [![Made with SvelteKit](https://img.shields.io/badge/Made%20with-SvelteKit-FF3E00.svg)](https://kit.svelte.dev/)
   [![Tauri](https://img.shields.io/badge/Tauri-Ready-blue?logo=tauri)](https://tauri.app)
 
@@ -77,9 +77,9 @@ timeswift/
 
 ## 📝 Lizenz
 
-Dieses Projekt ist lizenziert [License](./LICENSE) .
+Dieses Projekt verwendet eine eigene Lizenzvereinbarung. Details finden Sie in der [Lizenzdatei](./LICENSE).
 
-[![License:](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
+[![License: Custom](https://img.shields.io/badge/License-Custom-orange.svg)](./LICENSE)
 
 
 
