@@ -20,10 +20,9 @@
 - **🛡️ Sicherheit** - Verschlüsselte Datenspeicherung
 
 ## 🔧 Tech-Stack
-- Frontend: SvelteKit + TypeScript
-- Backend: Tauri (Rust)
+- Frontend: Tauri + SvelteKit + TypeScript
+- Backend: Typescript  
 - Datenbank: SurrealDB
-- Styling: TailwindCSS
 - Testing: Vitest
 
 
@@ -78,9 +77,9 @@ timeswift/
 
 ## 📝 Lizenz
 
-Dieses Projekt ist unter der [MIT-Lizenz](./LICENSE) lizenziert.
+Dieses Projekt ist lizenziert [License](./LICENSE) .
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
+[![License:](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 
 
 
