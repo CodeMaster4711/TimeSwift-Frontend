@@ -1,0 +1,24 @@
+{
+    "name": "Root",
+    "children": [
+        {
+            "name": "Branch 1",
+            "children": [
+                {
+                    "name": "Leaf 1-1"
+                },
+                {
+                    "name": "Leaf 1-2"
+                }
+            ]
+        },
+        {
+            "name": "Branch 2",
+            "children": [
+                {
+                    "name": "Leaf 2-1"
+                }
+            ]
+        }
+    ]
+}
