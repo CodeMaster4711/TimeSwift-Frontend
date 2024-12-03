@@ -59,22 +59,6 @@ cd timeswift
 npm install
 ```
 
-## 📁 Projektstruktur
-
-timeswift/
-├── src/
-│   ├── lib/
-│   │   ├── components/    # UI-Komponenten
-│   │   ├── database/      # SurrealDB Setup
-│   │   ├── stores/        # Svelte Stores
-│   │   └── utils/         # Hilfsfunktionen
-│   └── routes/            # SvelteKit Routen
-├── src-tauri/            # Tauri Backend
-│   ├── src/              # Rust Code
-│   └── Cargo.toml        # Rust Dependencies
-├── static/               # Assets
-└── tests/               # Tests
-
 ## 📝 Lizenz
 
 Dieses Projekt verwendet eine eigene Lizenzvereinbarung. Details finden Sie in der [Lizenzdatei](./LICENSE).
