@@ -70,7 +70,7 @@
     function databasegoto() {goto('/Database')};
     function timergoto() {goto('/Timer')};
     function homegoto() {goto('/Home')};
-
+    function admingoto() {goto('/Admin')};
 
     
 </script>
@@ -135,7 +135,7 @@
             }
 
             .nav-item:hover {
-                background: #0a5bb5;
+                background: #262626; /* Dunklerer Hintergrund bei Hover */
             }
 
            
@@ -266,21 +266,21 @@
             </div>
             <br>
             <div id="bar"></div> <!-- Trennlinie -->
-            <div class="nav-item" class:active={activeTab === 'home'} on:click={() => setActiveTab('home')}>
+            <div class="nav-item" class:active={activeTab === 'home'} on:click={() => setActiveTab('home')} on:click={homegoto}>
                     <span class="material-symbols-outlined nav-icon"on:click={homegoto}>home</span>
                     <span class="nav-text"on:click={homegoto}>Home</span>
             </div>
-            <div class="nav-item" class:active={activeTab === 'calendar'} on:click={() => setActiveTab('calendar')}>
+            <div class="nav-item" class:active={activeTab === 'calendar'} on:click={() => setActiveTab('calendar')} on:click={calendargoto}>
                 <span class="material-symbols-outlined nav-icon"on:click={calendargoto}>calendar_today</span>
                 <span class="nav-text animte"on:click={calendargoto}>Calender</span>
             </div>
-            <div class="nav-item" class:active={activeTab === 'timetable'} on:click={() => setActiveTab('timetable')}>
+            <div class="nav-item" class:active={activeTab === 'timetable'} on:click={() => setActiveTab('timetable')} on:click={timetablegoto}>
                 <span class="material-symbols-outlined nav-icon"on:click={timetablegoto}>schedule</span>
                 <span class="nav-text"on:click={timetablegoto}>Timetable</span>
             </div>
-            <div class="nav-item" class:active={activeTab === 'database'} on:click={() => setActiveTab('database')}>
-                <span class="material-symbols-outlined nav-icon"on:click={databasegoto}>database</span>
-                <span class="nav-text"on:click={databasegoto}>Database</span>
+            <div class="nav-item" class:active={activeTab === 'database'} on:click={() => setActiveTab('database')} on:click={databasegoto}>
+                <span class="material-symbols-outlined nav-icon">database</span>
+                <span class="nav-text">Database</span>
             </div>
             <div class="nav-item" class:active={activeTab === 'insights'} on:click={() => setActiveTab('insights')}>
                 <span class="material-symbols-outlined nav-icon"on:click={timergoto}>timer</span>
@@ -289,13 +289,13 @@
 
             <div id="bar"></div> <!-- Trennlinie -->
 
-            <div class="nav-item">
-                <span class="material-symbols-outlined nav-icon" on:click={settingstoggle}>settings</span>
-                <span class="nav-text"on:click={settingstoggle}>Settings</span>
+            <div class="nav-item" on:click={settingstoggle}>
+                <span class="material-symbols-outlined nav-icon">settings</span>
+                <span class="nav-text">Settings</span>
             </div>
-            <div class="nav-item">
-                <span class="material-symbols-outlined nav-icon" on:click={settingstoggle}>settings</span>
-                <span class="nav-text"on:click={settingstoggle}>Settings</span>
+            <div class="nav-item" on:click={settingstoggle}>
+                <span class="material-symbols-outlined nav-icon" >settings</span>
+                <span class="nav-text">Settings</span>
             </div>
             <br>
             <div id="bar"></div> <!-- Trennlinie -->
@@ -305,16 +305,16 @@
                 <span class="nav-text">Insights</span>
             </div>
 
-            <div class="nav-item">
-                <span class="material-symbols-outlined nav-icon nav-icon-logout"on:click={toggleLogoutModalClick}>logout</span>
-                <span class="nav-text nav-text-logout" on:click={toggleLogoutModalClick}>Logout</span>
+            <div class="nav-item" on:click={toggleLogoutModalClick}>
+                <span class="material-symbols-outlined nav-icon nav-icon-logout">logout</span>
+                <span class="nav-text nav-text-logout">Logout</span>
             </div>
             <br>
             <div id="bar"></div> <!-- Trennlinie -->
             <br>
-            <div class="nav-item admin" class:collapsed={isCollapsed}>
-                    <span class="material-symbols-outlined nav-icon">admin_panel_settings</span>
-                    <span class="nav-text">Admin</span>
+            <div class="nav-item admin" class:collapsed={isCollapsed} class:active={activeTab === 'admin'} on:click={() => setActiveTab('admin')} on:click={admingoto}>
+                    <span class="material-symbols-outlined nav-icon" >admin_panel_settings</span>
+                    <span class="nav-text" >Admin</span>
             </div>
 
         </div>
