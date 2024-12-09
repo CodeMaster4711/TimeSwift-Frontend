@@ -9,11 +9,16 @@
     import ClientDatabase from '$lib/components/client-database.svelte';
     import { token} from '$lib/config';
     import type { newMenu } from '@tauri-apps/api/menu/base';
+    import ColorThief from 'colorthief';
+
+    let searchQuery = '';
 
     let localIsCollapsed = false;
     let show = false;
     let temptoken: string | undefined;
     let selectedCustomer = null;
+    
+    let gradientColors = [];
 
     isCollapsed.subscribe(value => {
         localIsCollapsed = value;
@@ -52,6 +57,22 @@
         }
     });
 
+    onMount(() => {
+        const colorThief = new ColorThief();
+        $customers.forEach(customer => {
+            if (customer.logo && customer.logo.startsWith('data:image')) {
+                const img = new Image();
+                img.src = customer.logo;
+                img.crossOrigin = 'Anonymous';
+                img.onload = () => {
+                    const color = colorThief.getColor(img);
+                    gradientColors.push(`rgb(${color.join(',')})`);
+                    updateGradient();
+                };
+            }
+        });
+    });
+
     const addCustomer = () => {
         console.log('Add customer');
        show = true;
@@ -70,6 +91,13 @@
         const newCustomer = event.detail;
         show = false; // Popup schließen
     };
+
+    interface Customer {
+        name: string;
+        manageid: string;
+        logo?: string;
+        icon?: string;
+    }
 </script>
 <div class:collapsed={localIsCollapsed} class="background"></div>
 <div class:collapsed={localIsCollapsed} class="main">
@@ -81,8 +109,10 @@
                     <div class="customer-icon">
                         {#if customer.logo && customer.logo.startsWith('data:image')}
                             <img src={customer.logo} alt="Client Logo" class="client-logo" />
-                        {:else}
+                        {:else if customer.icon}
                             {customer.icon}
+                        {:else}
+                            <div class="placeholder"><span class="material-symbols-outlined">apartment</span></div>
                         {/if}
                     </div>
                     <div class="customer-details">
@@ -206,6 +236,17 @@
     }
     .client-logo {
         border-radius: 5px;
+        width: 50px;
+        height: 50px;
+        object-fit: cover;
+    }
+
+    .placeholder {
+        display: flex;
+        border-radius: 5px;
+        background-color: #757575;
+        justify-content: center;
+        align-items: center;
         width: 50px;
         height: 50px;
         object-fit: cover;
