@@ -1,24 +1,50 @@
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte';
   import { isCollapsed } from '$lib/navbar';
-  import { token} from '$lib/config';
+  import { token, id} from '$lib/config';
 
 
 
   let localIsCollapsed = false;
   let temptoken: string | undefined;
-  
+  let tempid: string | undefined;
 
 
   isCollapsed.subscribe(value => {
       localIsCollapsed = value;
   });
 
+  async function fetchuser(T: string, userid: string) {
+      console.log('Token:', T);
+      const response = await fetch(`http://localhost:3030/getallusers?token=${T}&userid=${userid}`, {
+          method: 'GET',
+          headers: {
+              'Content-Type': 'application/json'
+          }
+      });
+      console.log('Response:', response);
+      if (!response.ok) {
+          throw new Error('Error fetching user');
+      }
+      const data = await response.json();
+      console.log('Data:', data);
+  };
+
 
   onMount(() => {
       token.subscribe(value => {
          temptoken = value;
       });
+    
+
+      id.subscribe(value => {
+          tempid = value;
+      });
+      if (temptoken && tempid) {
+            fetchuser(temptoken, tempid);
+      } else {
+            console.log('Token or ID is undefined');
+      }
   });
 
 </script>
