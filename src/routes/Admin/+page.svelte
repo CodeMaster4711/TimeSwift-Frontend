@@ -2,80 +2,77 @@
   import { onMount, onDestroy } from 'svelte';
   import { isCollapsed } from '$lib/navbar';
   import { token, id} from '$lib/config';
-
-
+  import AUser from '$lib/components/admin-user.svelte';
+  import AGroup from '$lib/components/admin-group.svelte';
 
   let localIsCollapsed = false;
-  let temptoken: string | undefined;
-  let tempid: string | undefined;
-
 
   isCollapsed.subscribe(value => {
       localIsCollapsed = value;
   });
 
-  async function fetchuser(T: string, userid: string) {
-      console.log('Token:', T);
-      const response = await fetch(`http://localhost:3030/getallusers?token=${T}&userid=${userid}`, {
-          method: 'GET',
-          headers: {
-              'Content-Type': 'application/json'
-          }
-      });
-      console.log('Response:', response);
-      if (!response.ok) {
-          throw new Error('Error fetching user');
-      }
-      const data = await response.json();
-      console.log('Data:', data);
-  };
+  let showUserSettings = false;
+    let showGroupSettings = false;
+    let showOrganization = false;
+    let showLicence = false;
 
+    function toggleUserSettings() {
+        showUserSettings = true;
+        showGroupSettings = false;
+        showOrganization = false;
+        showLicence = false;
+    }
 
-  onMount(() => {
-      token.subscribe(value => {
-         temptoken = value;
-      });
-    
+    function toggleGroupSettings() {
+        showUserSettings = false;
+        showGroupSettings = true;
+        showOrganization = false;
+        showLicence = false;
+    }
 
-      id.subscribe(value => {
-          tempid = value;
-      });
-      if (temptoken && tempid) {
-            fetchuser(temptoken, tempid);
-      } else {
-            console.log('Token or ID is undefined');
-      }
-  });
+    function toggleOrganization() {
+        showUserSettings = false;
+        showGroupSettings = false;
+        showOrganization = true;
+        showLicence = false;
+    }
 
+    function toggleLicence() {
+        showUserSettings = false;
+        showGroupSettings = false;
+        showOrganization = false;
+        showLicence = true;
+    }
 </script>
+
 <div class:collapsed={localIsCollapsed} class="background"></div>
 <div class:collapsed={localIsCollapsed} class="main">
   <div class="selector">
       <div class="header">Admin Settings</div>
       <!-- Group Settings -->
         <div class="customer-list">
-          <div class="customer">
+          <div class="customer" on:click={toggleGroupSettings}>
             <div class="placeholder"><span class="material-symbols-outlined">groups</span></div>
             <div class="customer-details">
                 <p>Group Settings</p>
             </div>
         </div>
         <!-- User Settings -->
-          <div class="customer">
+          <div class="customer" on:click={toggleUserSettings}>
             <div class="placeholder"><span class="material-symbols-outlined">manage_accounts</span></div>
             <div class="customer-details">
                 <p>User Settings</p>
             </div>
         </div>  
         <!-- Organization -->
-          <div class="customer">
+          <div class="customer" on:click={toggleOrganization}>
             <div class="placeholder"><span class="material-symbols-outlined">apartment</span></div>
             <div class="customer-details">
                 <p>Organization</p>
             </div>
-        <!-- Licence -->
         </div>
-          <div class="customer">
+        <!-- Licence -->
+          <div class="customer" on:click={toggleLicence}>
             <div class="placeholder"><span class="material-symbols-outlined">license</span></div>
             <div class="customer-details">
                 <p>Licence</p>
@@ -84,8 +81,21 @@
         </div>
   </div>
   <div class="databaswindow">
+       {#if showUserSettings}
+            <AUser/>
+        {/if}
+        {#if showGroupSettings}
+            <AGroup/>
+        {/if}
+        {#if showOrganization}
+            <Organization/>
+        {/if}
+        {#if showLicence}
+            <Licence/>
+        {/if}
   </div>
 </div>
+
 
 
 <style>
