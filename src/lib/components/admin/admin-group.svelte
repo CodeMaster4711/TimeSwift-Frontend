@@ -47,8 +47,8 @@
 
 <div class="main">
     <div class="main-header">
-        <span class="material-icons">manage_accounts</span> <!-- Icon hinzugefügt -->
-        User Settings
+        <span class="material-icons">groups</span> <!-- Icon hinzugefügt -->
+        Group Settings
     </div>
     <div class="header">
         <span></span>

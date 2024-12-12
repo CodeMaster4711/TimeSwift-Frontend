@@ -3,7 +3,8 @@
   import { isCollapsed } from '$lib/navbar';
   import { token, id} from '$lib/config';
   import AUser from '$lib/components/admin-user.svelte';
-  import AGroup from '$lib/components/admin-group.svelte';
+  import AGroup from '$lib/components/admin/admin-group.svelte';
+  import Organization from '$lib/components/admin/admin-organization.svelte';
 
   let localIsCollapsed = false;
 
