@@ -89,7 +89,7 @@
         </div>
          <!-- Server -->
          <div class="customer" on:click={toggleServer}>
-            <div class="placeholder"><span class="material-symbols-outlined">dns</span></div>
+            <div class="placeholder"><span class="material-symbols-outlined">storage</span></div>
             <div class="customer-details">
                 <p>Server</p>
             </div>

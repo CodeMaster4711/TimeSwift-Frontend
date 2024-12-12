@@ -140,6 +140,9 @@
                     </div> 
                     <div class="label-text">Password Policy</div>
                 </div>
+                {#if !isPwpEnabled}
+                    <button class="Applybutton">Apply</button>
+                {/if}
             </div>
             {#if isPwpEnabled}
                 <div class="pwp-settings">
@@ -188,6 +191,7 @@
                         </div>
 
                     </div>
+                    <button class="Applybutton">Apply</button>
                 </div>
             {/if}
         </div>
@@ -233,6 +237,7 @@
                             </div>
                         </div>
                     </div>
+                    <button class="Applybutton">Apply</button>
                 </div>
              {/if}
         </div>
@@ -270,13 +275,17 @@
                         <div class="connection-status">Status: {$connectionStatus}</div>
                     </div>
                 </div>
+                <button class="Applybutton">Apply</button>
             </div>
         </div>
         
         <div class="delete">
             <h3 class="header">Delete Organization</h3>
             <div class="infomations"> 
-            
+                <div class="info-item">
+                    <label for="delete-organization">Delete Organization:</label>
+                    <button class="deletebutton">Delete</button>
+                </div>
             </div>
         </div>
     </div>
