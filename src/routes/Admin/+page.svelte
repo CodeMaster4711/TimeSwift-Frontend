@@ -2,9 +2,11 @@
   import { onMount, onDestroy } from 'svelte';
   import { isCollapsed } from '$lib/navbar';
   import { token, id} from '$lib/config';
-  import AUser from '$lib/components/admin-user.svelte';
+  import AUser from '$lib/components/admin/admin-user.svelte';
   import AGroup from '$lib/components/admin/admin-group.svelte';
   import Organization from '$lib/components/admin/admin-organization.svelte';
+  import ServerLicence from '$lib/components/admin/admin-license.svelte';
+  import Server from '$lib/components/admin/admin-server.svelte';
 
   let localIsCollapsed = false;
 
@@ -13,37 +15,50 @@
   });
 
   let showUserSettings = false;
-    let showGroupSettings = false;
-    let showOrganization = false;
-    let showLicence = false;
+  let showGroupSettings = false;
+  let showOrganization = false;
+  let showLicence = false;
+  let showServer = false;
 
-    function toggleUserSettings() {
-        showUserSettings = true;
-        showGroupSettings = false;
-        showOrganization = false;
-        showLicence = false;
-    }
+  function toggleUserSettings() {
+      showUserSettings = true;
+      showGroupSettings = false;
+      showOrganization = false;
+      showLicence = false;
+      showServer = false;
+  }
 
-    function toggleGroupSettings() {
-        showUserSettings = false;
-        showGroupSettings = true;
-        showOrganization = false;
-        showLicence = false;
-    }
+  function toggleGroupSettings() {
+      showUserSettings = false;
+      showGroupSettings = true;
+      showOrganization = false;
+      showLicence = false;
+      showServer = false;
+  }
 
-    function toggleOrganization() {
-        showUserSettings = false;
-        showGroupSettings = false;
-        showOrganization = true;
-        showLicence = false;
-    }
+  function toggleOrganization() {
+      showUserSettings = false;
+      showGroupSettings = false;
+      showOrganization = true;
+      showLicence = false;
+      showServer = false;
+  }
 
-    function toggleLicence() {
-        showUserSettings = false;
-        showGroupSettings = false;
-        showOrganization = false;
-        showLicence = true;
-    }
+  function toggleLicence() {
+      showUserSettings = false;
+      showGroupSettings = false;
+      showOrganization = false;
+      showLicence = true;
+      showServer = false;
+  }
+
+  function toggleServer() {
+      showUserSettings = false;
+      showGroupSettings = false;
+      showOrganization = false;
+      showLicence = false;
+      showServer = true;
+  }
 </script>
 
 <div class:collapsed={localIsCollapsed} class="background"></div>
@@ -72,6 +87,13 @@
                 <p>Organization</p>
             </div>
         </div>
+         <!-- Server -->
+         <div class="customer" on:click={toggleServer}>
+            <div class="placeholder"><span class="material-symbols-outlined">dns</span></div>
+            <div class="customer-details">
+                <p>Server</p>
+            </div>
+        </div>
         <!-- Licence -->
           <div class="customer" on:click={toggleLicence}>
             <div class="placeholder"><span class="material-symbols-outlined">license</span></div>
@@ -91,8 +113,11 @@
         {#if showOrganization}
             <Organization/>
         {/if}
+        {#if showServer}
+            <Server/>
+        {/if}
         {#if showLicence}
-            <Licence/>
+            <ServerLicence/>
         {/if}
   </div>
 </div>
@@ -181,8 +206,7 @@
       font-weight: bold;
   }
 
-  .placeholder {
-      margin-right: 10px;
+  .placeholder {      margin-right: 10px;
       display: flex;
       border-radius: 5px;
       background-color: #757575;
@@ -192,4 +216,11 @@
       height: 50px;
       object-fit: cover;
   }
+
+  .databaswindow {  
+    overflow-y: auto;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none;
+}
+    
 </style>
