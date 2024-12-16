@@ -21,12 +21,19 @@
         '1 Day'
     ];
    
-    let isPwpEnabled = false;
-    let isBackupEnabled = false;
+    let isPwpEnabled = writable(false);
+    let isBackupEnabled = writable(false);
     let backupInterval = writable(7);
     let backupRetention = writable('30 Tage');
     let backupLocation = writable('');
     let connectionStatus = writable('Not tested');
+
+    let force2FA = writable(false);
+    let forceHTTPS = writable(false);
+    let requireUppercase = writable(false);
+    let requireLowercase = writable(false);
+    let requireNumber = writable(false);
+    let requireSpecialChar = writable(false);
 
     onMount(() => {
         token.subscribe(value => {
@@ -39,19 +46,16 @@
     });
 
     function handlePwpToggle() {
-        isPwpEnabled = !isPwpEnabled;
+        isPwpEnabled.update(value => !value);
     }
 
     function handleBackupToggle() {
-        isBackupEnabled = !isBackupEnabled;
+        isBackupEnabled.update(value => !value);
     }
 
     async function testServerConnection() {
-        // Hier kannst du die Logik zum Testen der Serververbindung hinzufügen
-        // Zum Beispiel eine API-Anfrage senden und den Status aktualisieren
         connectionStatus.set('Testing...');
         try {
-            // Simuliere eine API-Anfrage
             await new Promise(resolve => setTimeout(resolve, 2000));
             connectionStatus.set('Connected');
         } catch (error) {
@@ -60,15 +64,42 @@
     }
 
     async function testSmtpConnection() {
-                        connectionStatus.set('Testing...');
-                        try {
-                            // Simulate an API request
-                            await new Promise(resolve => setTimeout(resolve, 2000));
-                            connectionStatus.set('Connected');
-                        } catch (error) {
-                            connectionStatus.set('Failed to connect');
-                        }
-                    }
+        connectionStatus.set('Testing...');
+        try {
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            connectionStatus.set('Connected');
+        } catch (error) {
+            connectionStatus.set('Failed to connect');
+        }
+    }
+
+    function applysecuritySettings() {
+        const securitySettings = {
+            force2FA: $force2FA,
+            forceHTTPS: $forceHTTPS,
+            passwordPolicy: $isPwpEnabled,
+            requireUppercase: $requireUppercase,
+            requireLowercase: $requireLowercase,
+            requireNumber: $requireNumber,
+            requireSpecialChar: $requireSpecialChar
+        };
+        console.log('Security Settings:', JSON.stringify(securitySettings, null, 2));
+    }
+
+    function applyBackupSettings() {
+        const backupSettings = {
+            backupEnabled: $isBackupEnabled,
+            backupInterval: $backupInterval,
+            backupRetention: $backupRetention,
+            backupLocation: $backupLocation,
+            connectionStatus: $connectionStatus
+        };
+
+        console.log('Backup Settings:', JSON.stringify(backupSettings, null, 2));
+    }
+    
+
+
 </script>
 
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
@@ -119,7 +150,7 @@
                 <!--Force 2FA-->
                 <div class="bundle">
                     <div class="toggle-switch">
-                        <input class="toggle-input" id="toggle-2fa" type="checkbox">
+                        <input class="toggle-input" id="toggle-2fa" type="checkbox" bind:checked={$force2FA}>
                         <label class="toggle-label" for="toggle-2fa"></label>
                     </div> 
                     <div class="label-text">Force 2FA</div>
@@ -127,7 +158,7 @@
                 <!--Force HTTPS-->
                 <div class="bundle">
                     <div class="toggle-switch">
-                        <input class="toggle-input" id="toggle-https" type="checkbox">
+                        <input class="toggle-input" id="toggle-https" type="checkbox" bind:checked={$forceHTTPS}>
                         <label class="toggle-label" for="toggle-https"></label>
                     </div> 
                     <div class="label-text">Force HTTPS</div>
@@ -140,39 +171,39 @@
                     </div> 
                     <div class="label-text">Password Policy</div>
                 </div>
-                {#if !isPwpEnabled}
+                {#if !$isPwpEnabled}
                     <button class="Applybutton">Apply</button>
                 {/if}
             </div>
-            {#if isPwpEnabled}
+            {#if $isPwpEnabled}
                 <div class="pwp-settings">
                     <h4>Password Policy Advanced Settings</h4>
                     <div class="pwp-advanced">
                         <div class="toggle-advanced">
                             <div class="bundle">
                                 <div class="toggle-switch">
-                                    <input class="toggle-input" id="toggle-up" type="checkbox">
+                                    <input class="toggle-input" id="toggle-up" type="checkbox" bind:checked={$requireUppercase}>
                                     <label class="toggle-label" for="toggle-up"></label>
                                 </div> 
                                 <div class="label-text">Uppercase</div>
                             </div>
                             <div class="bundle">
                                 <div class="toggle-switch">
-                                    <input class="toggle-input" id="toggle-low" type="checkbox">
+                                    <input class="toggle-input" id="toggle-low" type="checkbox"  bind:checked={$requireLowercase}>
                                     <label class="toggle-label" for="toggle-low"></label>
                                 </div> 
                                 <div class="label-text">Lowercase</div>
                             </div>
                             <div class="bundle">
                                 <div class="toggle-switch">
-                                    <input class="toggle-input" id="toggle-num" type="checkbox">
+                                    <input class="toggle-input" id="toggle-num" type="checkbox"  bind:checked={$requireNumber}>
                                     <label class="toggle-label" for="toggle-num"></label>
                                 </div> 
                                 <div class="label-text">Number</div>
                             </div>
                             <div class="bundle">
                                 <div class="toggle-switch">
-                                    <input class="toggle-input" id="toggle-s-char" type="checkbox">
+                                    <input class="toggle-input" id="toggle-s-char" type="checkbox" bind:checked={$requireSpecialChar}>
                                     <label class="toggle-label" for="toggle-s-char"></label>
                                 </div> 
                                 <div class="label-text">SpecialChar</div>
@@ -191,7 +222,7 @@
                         </div>
 
                     </div>
-                    <button class="Applybutton">Apply</button>
+                    <button class="Applybutton" on:click={applysecuritySettings}>Apply</button>
                 </div>
             {/if}
         </div>
@@ -207,7 +238,7 @@
                     <div class="label-text">Backup</div>
                 </div>
             </div>
-            {#if isBackupEnabled}
+            {#if $isBackupEnabled}
                 <div class="backup-settings">
                     <h4>Backup Settings</h4>
                     <div class="backup_values">
@@ -237,7 +268,7 @@
                             </div>
                         </div>
                     </div>
-                    <button class="Applybutton">Apply</button>
+                    <button class="Applybutton" on:click={applyBackupSettings}>Apply</button>
                 </div>
              {/if}
         </div>
@@ -502,5 +533,24 @@
         border-radius: 4px;
         margin-bottom: 2px;
         cursor: pointer;
+    }
+
+    .Applybutton {
+        margin-top: 20px;
+        padding: 10px;
+        width: 100px;
+        background-color: #2d2d2d;
+        border: 2px solid #f7f7f7;
+        color: #ffffff;
+        font-size: bold;
+        border-radius: 4px;
+        margin-bottom: 2px;
+        cursor: pointer;
+    }
+
+    .Applybutton:hover {
+        border: 2px solid #FF0000;
+        color: #FF0000;
+        transition: all 0.3s;
     }
 </style>
