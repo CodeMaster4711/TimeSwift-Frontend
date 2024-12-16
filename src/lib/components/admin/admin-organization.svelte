@@ -20,6 +20,13 @@
         '3 Days',
         '1 Day'
     ];
+
+    const organizationName = writable('TimeSwift');
+    const organizationDescription = writable('We provide innovative time management solutions for businesses of all sizes.');
+    const organizationAddress = writable(' 1234 TimeSwift Lane, Time City, Time Country');
+    const organizationContact = writable(' +1 123 456 7890');
+    const organizationWebsite = writable(' www.timeswift');
+    const organizationFounded = writable(' 2021');
    
     let isPwpEnabled = writable(false);
     let isBackupEnabled = writable(false);
@@ -114,32 +121,40 @@
         <div class="general-informations">
             <h3 class="header">General Informations</h3>
             <div class="infomations"> 
-                <div class="info-item">
-                    <label for="org-logo">Logo:</label>
-                   
-                </div>
-                <div class="info-item">
-                    <label for="org-name">Organization Name:</label>
-                  
-                </div>
-                <div class="info-item">
-                    <label for="org-description">Description:</label>
-                   
-                </div>
-                <div class="info-item">
-                    <label for="org-address">Address:</label>
-                </div>
-                <div class="info-item">
-                    <label for="org-contact">Contact Information:</label>
-                   
-                </div>
-                <div class="info-item">
-                    <label for="org-website">Website:</label>
-                    
-                </div>
-                <div class="info-item">
-                    <label for="org-founded">Founded Date:</label>
-                   
+                <div class="supercontainer">
+                    <div class="container2">
+                        <div class="info-item">
+                            <label for="org-name">Organization Name:</label>
+                            <input type="text" id="org-name" bind:value={$organizationName}>
+                        </div>
+                        <div class="info-item">
+                            <label for="org-description">Description:</label>
+                            <input type="text" id="org-description" bind:value={$organizationDescription}>
+                        </div>
+                        <div class="info-item">
+                            <label for="org-address">Address:</label>
+                            <input type="text" id="org-address" bind:value={$organizationAddress}>
+                        </div>
+                        <div class="info-item">
+                            <label for="org-contact">Contact Information:</label>
+                            <input type="text" id="org-contact" bind:value={$organizationContact}>
+                        </div>
+                        <div class="info-item">
+                            <label for="org-website">Website:</label>
+                            <input type="text" id="org-website" bind:value={$organizationWebsite}>
+                        </div>
+                        <div class="info-item">
+                            <label for="org-founded">Founded Date:</label>
+                            <input type="text" id="org-founded" bind:value={$organizationFounded}>
+                        </div>
+                    </div>
+                    <div class="container1">
+                        <div class="info-item">
+                            <label for="org-logo"></label>
+                            <img src="/logo.png" alt="Organization Logo" style="max-width: 250px; height: auto;">
+                        </div>
+                        <input type="file" id="org-logo" accept="image/*">
+                    </div>
                 </div>
             </div>
         </div>
@@ -553,4 +568,25 @@
         color: #FF0000;
         transition: all 0.3s;
     }
+
+    .container2 {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+    }
+
+    .container1 {
+        display: flex;
+        justify-content: flex-end;
+        align-self: center;
+        flex-direction: column;
+    }
+
+    .supercontainer {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+
+   
 </style>
