@@ -8,7 +8,8 @@
     let newLocation = '';
     let temptoken: string | undefined;
     temptoken = get(token);
-
+    let selectedLocation = null;
+    let selectedTab = 'networkTree';
     let mapUrl = '';
 
 
@@ -16,12 +17,25 @@
         if (newLocation.trim() !== '') {
             locations = [...locations, newLocation];
             newLocation = '';
+            updateMapUrl();
         }
     }
 
 
     function addDummyLocation() {
         locations = [...locations, 'London'];
+        updateMapUrl();
+    }
+
+
+    function switchTab(tab) {
+        selectedTab = tab;
+    }
+
+    function handleFileUpload(event) {
+        const files = event.target.files;
+        // Hier können Sie den Upload-Prozess implementieren
+        console.log(files);
     }
 
 
@@ -51,8 +65,14 @@
                 }
             }
         } catch (err) {
-            console.error(err);W
+            console.error(err);
         }
+    }
+
+    function getinfos(location) {
+        console.log('Get Infos');
+        selectedLocation = location;
+        console.log(selectedLocation);
     }
 
     onMount(() => {
@@ -60,18 +80,47 @@
         fetchLocations(clientId, temptoken);
     });
 </script>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 <div class="main">
     <div class="location-bar">
         <ul class="location-list">
             <div class="header">Sites</div>
             {#each locations as location}
-                 <li class="location-item" on:click={() => updateMapUrl(location)}>{location.city}</li>
+                <li class="location-item" on:click={() => getinfos(location)}>{location.city}</li>
             {/each}
             <button class="addlocation" on:click={addDummyLocation}>+</button>
         </ul>
     </div>
     <div class="datawindow">
-        <h1>Network</h1>
+        {#if selectedLocation}
+            <div class="header-container">
+                <div class="headerdata">
+                    Network: {selectedLocation.city}
+                </div>
+                <div class="header-line"></div>
+            </div>
+            <div class="order">
+                <div class="address">
+                    <div class="tabs">
+                        <button class="tab-item" on:click={() => switchTab('networkTree')}>Network Tree</button>
+                        <button class="tab-item" on:click={() => switchTab('uploadImage')}>Upload Image</button>
+                    </div>
+                </div>
+                <div class="description">
+                    <div class="header-dis">Description</div>
+                    {#if selectedTab === 'networkTree'}
+                        <div class="network-tree">
+                            <!-- Hier den Network-Tree implementieren -->
+                            <p>Network Tree wird hier angezeigt.</p>
+                        </div>
+                    {:else if selectedTab === 'uploadImage'}
+                        <div class="upload-image">
+                            <input type="file" on:change={handleFileUpload} multiple />
+                        </div>
+                    {/if}
+                </div>
+            </div>
+        {/if}
     </div> 
 </div>
 <style>
@@ -144,12 +193,120 @@
     .datawindow {
         height: calc(100vh - 210px);
         margin-left: 15px;
-        padding-left: 20px;
         flex-grow: 1;
+        color: #ffffff;
         background-color: #292929;
         z-index: 5000;
         border-radius: 20px;
     }
-
     
+    .header-container {
+        display: flex;
+        font-size: 30px;
+        font-weight: bold;	
+        padding: 5px;
+        margin: 10px;
+        border-radius: 10px;
+        flex-grow: 1;
+        background-color: #1e1e1e;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+    .order {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .address {
+        flex-grow: 0; /* Blöcke füllen den verfügbaren Platz */
+        background-color: #1e1e1e;
+        font-size: 14px;
+        margin: 0 10px;
+        padding: 15px;
+        color: #ffffff;
+        border-radius: 10px;
+        height: calc(100vh - 320px);
+    }
+
+    .description {
+        flex-grow: 5; /* Blöcke füllen den verfügbaren Platz */
+        background-color: #1e1e1e;
+        font-size: 14px;
+        margin: 0 10px;
+        padding: 15px;
+        color: #ffffff;
+        border-radius: 10px;
+        height: calc(100vh - 320px);
+    }
+    
+    .description-text {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+        color: #aaaaaa; /* Leicht gräuliche Farbe */
+    }
+
+    .header-dis {
+        font-size: 20px;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+
+    .address-header {
+        font-size: 20px;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }    
+
+    .address-text {
+        font-size: 17px;
+        margin-left: 10px;
+        display: flex;
+    }
+
+    .map-link {
+        margin-top: calc(100vh - 500px);
+        text-align: center;
+    }
+
+    .map-button {
+        background-color: #ff5722;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+    }
+
+    .map-button:hover {
+        background-color: #e64a19;
+    }
+
+    .tabs {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        margin-bottom: 10px;
+
+    }  
+    
+    .tab-item {
+        display: flex;
+        justify-content: center;
+        font-weight: 500;
+        font-size: 15px;
+        max-width: 100%;
+        background-color: #292929;
+        color: #ffffff;
+        border: none;
+        border-radius: 4px;
+        padding: 5px 5px;
+        cursor: pointer;
+        margin-top: 10px;
+    }
 </style>

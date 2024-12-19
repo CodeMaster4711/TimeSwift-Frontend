@@ -31,6 +31,13 @@
         }
     });
 
+    function validateEmail(email: string) {
+      const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!re.test(email)) {
+        throw new Error('E-Mail is not valid!');
+      }
+    }
+
     const validateToken = async (sessionToken: string) => {
         try {
             const response = await fetch('http://localhost:3030/validate', {
@@ -75,6 +82,7 @@
         error = "";
 
         try {
+            validateEmail(username);
             const response = await fetch('http://localhost:3030/signin', {
                 method: 'POST',
                 headers: {
@@ -109,6 +117,8 @@
         } catch (e) {
             console.error('Fetch error:', e); // Ausgabe des Fehlers in der Konsole
             error = e.message;
+            username = "";
+            password = "";
         } finally {
             loading = false;
         }
@@ -119,6 +129,7 @@
     }
 
     const signup = async () => {
+        validateEmail(email);
         loading = true;
         error = "";
 
@@ -184,9 +195,9 @@
         <!-- Login-Formular -->
         <div class="form">
           <div class="input-data">
-            <input type="text" bind:value={username} required>
+            <input type="text"  bind:value={username} required>
             <div class="underline"></div>
-            <label>Username</label>
+            <label>E-Mail</label>
           </div>
           <div class="input-data">
             <input type="password" bind:value={password} required>
@@ -208,7 +219,7 @@
             <label>Firstname</label>
           </div>
           <div class="input-data">
-            <input type="email" bind:value={email} required>
+            <input type="text" bind:value={email} required>
             <div class="underline"></div>
             <label>Email</label>
           </div>
@@ -363,6 +374,7 @@
     font-size: 13px;
     color: #F00101;
   }
+
   .input-data .underline {
     position: absolute;
     bottom: 0;
@@ -447,5 +459,7 @@
   transform: rotate(360deg);
  }
 }
+
+
 
 </style>
