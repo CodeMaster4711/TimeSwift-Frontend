@@ -71,6 +71,7 @@
     function timergoto() {goto('/Timer')};
     function homegoto() {goto('/Home')};
     function admingoto() {goto('/Admin')};
+    function insightsgoto() {goto('/Insights')};
 
     
 </script>
@@ -282,7 +283,7 @@
                 <span class="material-symbols-outlined nav-icon">database</span>
                 <span class="nav-text">Database</span>
             </div>
-            <div class="nav-item" class:active={activeTab === 'insights'} on:click={() => setActiveTab('insights')}>
+            <div class="nav-item" class:active={activeTab === 'timer'} on:click={() => setActiveTab('timer')}>
                 <span class="material-symbols-outlined nav-icon"on:click={timergoto}>timer</span>
                 <span class="nav-text"on:click={timergoto}>Timer</span>
             </div>
@@ -300,7 +301,7 @@
             <br>
             <div id="bar"></div> <!-- Trennlinie -->
             <br>
-            <div class="nav-item">
+            <div class="nav-item" class:active={activeTab === 'insights'} on:click={() => setActiveTab('insights')} on:click={insightsgoto}>
                 <span class="material-symbols-outlined nav-icon">search_insights</span>
                 <span class="nav-text">Insights</span>
             </div>
