@@ -134,4 +134,22 @@
     .current-user {
         opacity: 0.5; /* Ausgrauen des aktuellen Benutzers */
     }
+
+    .user:hover {
+        transform: translateY(-0.5px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        background-color: #333333;
+    }
+    .user:nth-child(even):hover {
+        background-color: #303030;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .user {
+        animation: fadeIn 0.3s ease-out;
+    }
 </style>

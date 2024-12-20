@@ -7,8 +7,10 @@
   import Organization from '$lib/components/admin/admin-organization.svelte';
   import ServerLicence from '$lib/components/admin/admin-license.svelte';
   import Server from '$lib/components/admin/admin-server.svelte';
+  import Authentik from '$lib/components/Verification/frontend.svelte';
 
   let localIsCollapsed = false;
+  let show2FA = true;
 
   isCollapsed.subscribe(value => {
       localIsCollapsed = value;
@@ -59,10 +61,17 @@
       showLicence = false;
       showServer = true;
   }
+
+  function on2FAComplete() {
+      show2FA = false;
+  }
 </script>
 
 <div class:collapsed={localIsCollapsed} class="background"></div>
 <div class:collapsed={localIsCollapsed} class="main">
+{#if show2FA}
+    <Authentik on:verified={on2FAComplete} />
+{:else}
   <div class="selector">
       <div class="header">Admin Settings</div>
       <!-- Group Settings -->
@@ -120,6 +129,7 @@
             <ServerLicence/>
         {/if}
   </div>
+  {/if}
 </div>
 
 

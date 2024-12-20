@@ -94,6 +94,12 @@
         background-color: #2d2d2d;
         margin-bottom: 10px;
     }
+
+    .user:hover {
+        transform: translateY(-0.5px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        background-color: #333333;
+    }
     .user {
         margin-left: 10px;
         margin-right: 10px;
@@ -108,6 +114,10 @@
         margin-bottom: 2px;
         border-radius: 10px;
         background-color: #2d2d2d;
+    }
+
+    .user:nth-child(even):hover {
+        background-color: #303030;
     }
     .user .material-icons, .header span {
         margin-right: 10px;
@@ -132,7 +142,16 @@
         accent-color: #F00101;
     }
 
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
     .current-user {
         opacity: 0.5; /* Ausgrauen des aktuellen Benutzers */
+    }
+
+    .user {
+        animation: fadeIn 0.3s ease-out;
     }
 </style>
