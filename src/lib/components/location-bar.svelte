@@ -69,6 +69,7 @@
         fetchLocations(clientId, temptoken);
     });
 </script>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 <div class="main">
     <div class="location-bar">
         <ul class="location-list">
@@ -80,18 +81,28 @@
         </ul>
     </div>
     <div class="datawindow">
-        <h1>Location</h1>
-        {#if mapUrl}
-            <iframe src={mapUrl}></iframe>
-        {/if}
         {#if selectedLocation}
-            <div class="address">
-                <h1>Address</h1>
-                <span>{selectedLocation.street} {selectedLocation.housenumber}</span> <br>
-                <span>{selectedLocation.city} {selectedLocation.postcode}</span>
+            <div class="header-container">
+                <div class="headerdata">
+                    {selectedLocation.city}
+                </div>
+                <div class="header-line"></div>
             </div>
-            <div class="description">
-                <!-- Weitere Informationen zur Location -->
+            <div class="order">
+                <div class="address">
+                    <div class="address-header"><span class="material-symbols-outlined">distance</span> Address</div>
+                    <span class="address-text">{selectedLocation.street} {selectedLocation.housenumber}</span> <br>
+                    <span class="address-text">{selectedLocation.city} {selectedLocation.postcode}</span>
+                    <div class="map-link">
+                        <button class="map-button" on:click={() => window.open(`https://www.google.com/maps/search/?api=1&query=${selectedLocation.street}+${selectedLocation.housenumber},+${selectedLocation.city}`, '_blank')}>
+                            View on Google Maps
+                        </button>
+                    </div>
+                </div>
+                <div class="description">
+                    <div class="header-dis">Description</div>
+                    <span class="description-text">{selectedLocation.description || 'Nothing here yet ＞︿＜ ...'}</span>
+                </div>
             </div>
         {/if}
     </div> 
@@ -166,12 +177,97 @@
     .datawindow {
         height: calc(100vh - 210px);
         margin-left: 15px;
-        padding-left: 20px;
         flex-grow: 1;
+        color: #ffffff;
         background-color: #292929;
         z-index: 5000;
         border-radius: 20px;
     }
-
     
+    .header-container {
+        display: flex;
+        font-size: 30px;
+        font-weight: bold;	
+        padding: 5px;
+        margin: 10px;
+        border-radius: 10px;
+        flex-grow: 1;
+        background-color: #1e1e1e;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+    .order {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .address {
+        flex-grow: 1; /* Blöcke füllen den verfügbaren Platz */
+        background-color: #1e1e1e;
+        font-size: 14px;
+        margin: 0 10px;
+        padding: 15px;
+        color: #ffffff;
+        border-radius: 10px;
+        height: calc(100vh - 320px);
+    }
+
+    .description {
+        flex-grow: 4; /* Blöcke füllen den verfügbaren Platz */
+        background-color: #1e1e1e;
+        font-size: 14px;
+        margin: 0 10px;
+        padding: 15px;
+        color: #ffffff;
+        border-radius: 10px;
+        height: calc(100vh - 320px);
+    }
+    
+    .description-text {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+        color: #aaaaaa; /* Leicht gräuliche Farbe */
+    }
+
+    .header-dis {
+        font-size: 20px;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+
+    .address-header {
+        font-size: 20px;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }    
+
+    .address-text {
+        font-size: 17px;
+        margin-left: 10px;
+        display: flex;
+    }
+
+    .map-link {
+        margin-top: calc(100vh - 500px);
+        text-align: center;
+    }
+
+    .map-button {
+        background-color: #ff5722;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+    }
+
+    .map-button:hover {
+        background-color: #e64a19;
+    }
 </style>
