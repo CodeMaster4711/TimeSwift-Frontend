@@ -19,7 +19,6 @@
     "chart.js": "^4.4.5",
     "colorthief": "^2.6.0",
     "d3": "^7.9.0",
-    "html2pdf.js": "^0.10.1",
     "svelte-calendar": "^3.1.6"
   },
   "devDependencies": {
