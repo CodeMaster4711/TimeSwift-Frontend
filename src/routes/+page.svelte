@@ -89,7 +89,7 @@
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    email: username,
+                    username: username,
                     password: password
                 })
             });
@@ -101,7 +101,7 @@
             const data = await response.json();
             console.log('Server response:', data); // Ausgabe der Serverantwort
 
-            if (data.success) {
+            if (data.token) {
                 username = "";
                 password = "";
                 token.set(data.token);
@@ -156,8 +156,8 @@
             if (!response.ok) {
                 throw new Error('Error while signing up!');
             }
-
             const data = await response.json();
+
             if (data.success) {
                 name = "";
                 firstname = "";
@@ -251,6 +251,19 @@
 </div>
 
 <style>
+  :root {
+    --primary-color: #ff0000;
+    --primary-gradient-start: rgba(255, 0, 0, 1);
+    --primary-gradient-end: rgba(150, 0, 0, 1);
+    --background-color: #000000;
+    --text-color: #ffffff;
+    --input-border-color: #292929;
+    --input-focus-color: #F00101;
+    --background-color-light: #3e3e3e;
+  }
+
+
+
   @import url('https://fonts.googleapis.com/css?family=Poppins:400,500,600,700&display=swap');
   * {
     margin: 0;
@@ -296,7 +309,8 @@
     width: 50%;
     height: 100%;
     max-width: 50%;
-    background-color: #FFFFFF;
+    background-color: var(--input-border-color);
+    color: var(--text-color);
     display: flex;
     justify-content: center; /* Zentriert den Inhalt horizontal */
     align-items: center; /* Zentriert den Inhalt vertikal */
@@ -304,12 +318,12 @@
   }
   .innerlogin {
     width: 70%;
-    height: 70%;
+    height: 80%;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    background-color: rgb(255, 255, 255);
+    background-color: var(--input-border-color);
     position: relative; /* Relativ positioniert, um absolute Positionierung des Buttons zu ermöglichen */
   }
   .tabs {
@@ -321,7 +335,7 @@
     position: absolute;
     top: 11vh; /* Abstand vom oberen Rand der innerlogin-Div */
     margin-bottom: 5vh;
-    background-color: #2A2A2A;
+    background-color: var(--background-color-light);
   }
   .tabs button {
     background: none;
@@ -344,7 +358,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    background-color: rgb(255, 255, 255);
+    background-color: var(--input-border-color);
   }
   .input-data {
     position: relative;
@@ -354,7 +368,7 @@
   .input-data input {
     width: 100%;
     border: none;
-    border-bottom: 2px solid #292929;
+    border-bottom: 2px solid var(--text-color);
     outline: none;
     font-size: 17px;
     padding: 10px 0;
@@ -400,7 +414,7 @@
     font-weight: bold;
     font-family: 'Roboto', sans-serif;
     margin-bottom: 20px;
-    background-color: rgb(255, 255, 255);
+    background-color: var(--input-border-color);
     position: absolute;
     top: 3vh; /* Abstand vom oberen Rand der innerlogin-Div */
   }
@@ -412,7 +426,7 @@
     background: linear-gradient(90deg, rgba(255,0,0,1) 0%, rgba(150,0,0,1) 100%);
     width: 60%;
     border-radius: 30px;
-    color: #fff;
+    color: var(--text-color);
     border: none;
     cursor: pointer;
     position: absolute; /* Absolute Positionierung innerhalb der innerlogin-Div */
@@ -421,8 +435,8 @@
 
   .action-button:hover {
     font-weight: bold;
-    background-color: #2A2A2A !important; 
-    color:#fff !important;
+    background-color:  var(--background-color-light)!important; 
+    color:var(--text-color) !important;
    
   }
 
