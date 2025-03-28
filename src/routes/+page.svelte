@@ -6,6 +6,7 @@
     import {onMount} from "svelte";
     import { token, fullname, Semail, totalHours, totalInOnWeek, UID, id, ICON} from '$lib/config';
     import { IconMenuItem } from "@tauri-apps/api/menu";
+   
 
 
   let error = "";
@@ -175,14 +176,78 @@
             loading = false;
         }
     }
+
+    async function loginWithPasskey() {
+        loading = true;
+        try {
+            // Hier würde die eigentliche WebAuthn/Passkey-Authentifizierung stattfinden
+            console.log("Passkey-Authentifizierung gestartet");
+            // Demo-Implementierung
+            
+        } catch (e) {
+            console.error('Passkey error:', e);
+            error = "Passkey-Authentifizierung fehlgeschlagen";
+            loading = false;
+        }
+    }
+
+
+    // In Ihrem <script>-Bereich hinzufügen
+// In Ihrem <script>-Bereich aktualisieren
+onMount(() => {
+  let secondHand = document.querySelector('.second-hand') as HTMLElement;
+  let minuteHand = document.querySelector('.minute-hand') as HTMLElement;
+  let hourHand = document.querySelector('.hour-hand') as HTMLElement;
+  
+  function updateClock() {
+    const now = new Date();
+    const seconds = now.getSeconds();
+    const minutes = now.getMinutes();
+    const hours = now.getHours() % 12; // 12-Stunden-Format für die Rotation
+    
+    // Berechnung der Winkel
+    // Sekundenzeiger: 6 Grad pro Sekunde (360° / 60s)
+    const secondsDegrees = ((seconds / 60) * 360);
+    
+    // Minutenzeiger: 6 Grad pro Minute + anteilige Bewegung durch Sekunden
+    const minutesDegrees = ((minutes / 60) * 360) + ((seconds / 60) * 6);
+    
+    // Stundenzeiger: 30 Grad pro Stunde + anteilige Bewegung durch Minuten
+    const hoursDegrees = ((hours / 12) * 360) + ((minutes / 60) * 30);
+    
+    // Anwenden der Rotationen
+    // Spezialbehandlung für den Übergang von 59 auf 0 Sekunden für den Sekundenzeiger
+    secondHand.style.transition = seconds === 0 ? 'none' : 'transform 0.1s ease-in-out';
+    secondHand.style.transform = `translate(-50%, -100%) rotate(${secondsDegrees}deg)`;
+    
+    // Minutenzeiger bewegt sich kontinuierlich
+    minuteHand.style.transform = `translate(-50%, -100%) rotate(${minutesDegrees}deg)`;
+    
+    // Stundenzeiger bewegt sich kontinuierlich
+    hourHand.style.transform = `translate(-50%, -100%) rotate(${hoursDegrees}deg)`;
+  }
+
+  // Initial update
+  updateClock();
+  
+  // Update jede Sekunde
+  const timer = setInterval(updateClock, 1000);
+  
+  // Cleanup bei Komponentenabbau
+  return () => clearInterval(timer);
+});
 </script>
 
 <div class="main">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
   <div class="image">
     <img src="/Group01.svg">
   </div>
   <div class="circle">
     <img class ="clock" src="/Clock.png">
+    <div class="hour-hand"></div>
+    <div class="minute-hand"></div>
+    <div class="second-hand"></div>
   </div>
   <div class="login">
     <div class="innerlogin">
@@ -204,6 +269,10 @@
             <div class="underline"></div>
             <label>Password</label>
           </div>
+          <button class="passkey-button" on:click={loginWithPasskey}>
+            <img src="/icons/passkey.svg" alt="Passkey Icon" class="passkey-icon" />
+            Mit Passkey anmelden
+          </button>
         </div>
       {:else if activeTab === 'createAccount'}
         <!-- Account erstellen Formular -->
@@ -295,14 +364,22 @@
     z-index: 1000;
   }
   .image {
-    position: fixed;
-    left: 0;
-    width: auto;
-    height: auto;
-    max-width: 100%;
-    max-height: 100%;
-    display: flex;
-  }
+  position: fixed;
+  left: 0;
+  width: 50%;    /* 50% der Bildschirmbreite einnehmen */
+  height: 100%;  /* Volle Höhe einnehmen */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;  /* Verhindert Überläufe */
+}
+
+.image img {
+  width: 100%;    /* Bild füllt den Container aus */
+  height: 100%;   /* Bild füllt den Container aus */
+  object-fit: cover;  /* Behält Seitenverhältnis bei und füllt den Container */
+  object-position: center;  /* Zentriert das Bild */
+}
   .login {
     position: fixed;
     right: 0;
@@ -450,6 +527,48 @@
     justify-content: center;
     z-index: 1001;
   }
+
+
+  .second-hand {
+  position: absolute;
+  width: 2px;
+  height: 78px; /* Länge des Zeigers relativ zur Uhr */
+  background-color: #ff0000;
+  top: 50%; /* Setzt den Ursprung in die Mitte */
+  left: 50%; /* Setzt den Ursprung in die Mitte */
+  transform-origin: bottom center; /* Ursprung für die Rotation */
+  transform: translate(-50%, -100%) rotate(0deg); /* Zentriert den Zeiger */
+  z-index: 1002;
+  box-shadow: 0 0 5px rgba(255, 0, 0, 0.7);
+}
+
+.hour-hand {
+  position: absolute;
+  width: 4px;
+  height: 50px; /* Kürzer als Minuten- und Sekundenzeiger */
+  background-color: #ffffff; /* Weiß für den Stundenzeiger */
+  top: 50%;
+  left: 50%;
+  transform-origin: bottom center;
+  transform: translate(-50%, -100%) rotate(0deg);
+  z-index: 1002;
+  box-shadow: 0 0 3px rgba(255, 255, 255, 0.7);
+  border-radius: 3px 3px 0 0;
+}
+
+.minute-hand {
+  position: absolute;
+  width: 3px;
+  height: 65px; /* Länger als Stundenzeiger, kürzer als Sekundenzeiger */
+  background-color: #cccccc; /* Grau für den Minutenzeiger */
+  top: 50%;
+  left: 50%;
+  transform-origin: bottom center;
+  transform: translate(-50%, -100%) rotate(0deg);
+  z-index: 1002;
+  box-shadow: 0 0 3px rgba(204, 204, 204, 0.7);
+  border-radius: 2px 2px 0 0;
+}
   
 .success {
  width: 60px;
@@ -474,6 +593,31 @@
  }
 }
 
+.passkey-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 70%;
+  margin-top: 15px;
+  padding: 10px 16px;
+  background: none;
+  border: 2px solid var(--background-color-light);
+  border-radius: 30px;
+  color: var(--text-color);
+  font-size: 1em;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
 
+.passkey-button:hover {
+  background-color: rgba(255, 1, 1, 0.1);
+  border-color: var(--input-focus-color);
+}
 
+.passkey-icon {
+  width: 18px;
+  height: 18px;
+  margin-right: 8px;
+}
 </style>

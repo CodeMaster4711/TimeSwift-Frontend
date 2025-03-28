@@ -19,7 +19,8 @@
     "chart.js": "^4.4.5",
     "colorthief": "^2.6.0",
     "d3": "^7.9.0",
-    "svelte-calendar": "^3.1.6"
+    "svelte-calendar": "^3.1.6",
+    "svelte-feather-icons": "^4.2.0"
   },
   "devDependencies": {
     "@sveltejs/adapter-static": "^3.0.1",
