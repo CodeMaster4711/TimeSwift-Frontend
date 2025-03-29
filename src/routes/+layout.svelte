@@ -72,6 +72,8 @@
     function homegoto() {goto('/Home')};
     function admingoto() {goto('/Admin')};
     function insightsgoto() {goto('/Insights')};
+    function toggletotp() {goto('/OTP')};
+    
 
     
 </script>
@@ -271,7 +273,7 @@
                     <span class="material-symbols-outlined nav-icon"on:click={homegoto}>home</span>
                     <span class="nav-text"on:click={homegoto}>Home</span>
             </div>
-            <div class="nav-item" class:active={activeTab === 'calendar'} on:click={() => setActiveTab('calendar')} on:click={calendargoto}>
+            <div class="nav-item" class:active={activeTab === 'calendar'} on:click={() => setActiveTab('calendar')} on:click={toggletotp}>
                 <span class="material-symbols-outlined nav-icon"on:click={calendargoto}>calendar_today</span>
                 <span class="nav-text animte"on:click={calendargoto}>Calender</span>
             </div>
