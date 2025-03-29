@@ -244,7 +244,8 @@ onMount(() => {
     <img src="/Group01.svg">
   </div>
   <div class="circle">
-    <img class ="clock" src="/Clock.png">
+    <img class ="clock" src="/clock/Clock-Main.png">
+    <div class="center"></div>
     <div class="hour-hand"></div>
     <div class="minute-hand"></div>
     <div class="second-hand"></div>
@@ -559,7 +560,7 @@ onMount(() => {
 .minute-hand {
   position: absolute;
   width: 3px;
-  height: 65px; /* Länger als Stundenzeiger, kürzer als Sekundenzeiger */
+  height: 75px; /* Länger als Stundenzeiger, kürzer als Sekundenzeiger */
   background-color: #cccccc; /* Grau für den Minutenzeiger */
   top: 50%;
   left: 50%;
@@ -568,6 +569,18 @@ onMount(() => {
   z-index: 1002;
   box-shadow: 0 0 3px rgba(204, 204, 204, 0.7);
   border-radius: 2px 2px 0 0;
+}
+
+.center {
+  position: absolute;
+  width: 11px; /* Breite des Zentrums */
+  height: 11px; /* Höhe des Zentrums */
+  background-color: #c8c8c8; /* Farbe des Zentrums */
+  border-radius: 50%; /* Macht es rund */
+  top: 50%; /* Zentriert vertikal */
+  left: 50%; /* Zentriert horizontal */
+  transform: translate(-50%, -50%); /* Verschiebt es um die Hälfte seiner Größe zurück */
+  z-index: 1003;
 }
   
 .success {
